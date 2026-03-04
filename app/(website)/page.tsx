@@ -4,7 +4,7 @@ import OurWork from "@/components/common/OurWork";
 import Impact from "@/components/common/Impact";
 import NewsSection from "@/components/common/NewsSection";
 import Newsletter from "@/components/common/NewsLetter";
-
+import MissionStatement from "@/components/common/MissionStatement";
 
 export default function Home() {
   return (
@@ -12,6 +12,7 @@ export default function Home() {
       <Hero />
       <About />
       <OurWork />
+      <MissionStatement />
       <NewsSection />
       <Newsletter />
     </div>
