@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -32,26 +31,49 @@ const slides = [
 ];
 
 const stripItems = [
-  { icon: "👥", num: "50+",  label: "Youth Clubs",       title: "Nationwide Network" },
-  { icon: "🌳", num: "10K+", label: "Trees Planted",     title: "Reforestation Impact" },
-  { icon: "📍", num: "28",   label: "Districts Reached", title: "All Across Malawi" },
-  { icon: "🌿", num: "5K+",  label: "Active Members",    title: "Youth Conservation Force" },
+  { icon: "👥", num: "50+", label: "Youth Clubs", title: "Nationwide Network" },
+  {
+    icon: "🌳",
+    num: "10K+",
+    label: "Trees Planted",
+    title: "Reforestation Impact",
+  },
+  {
+    icon: "📍",
+    num: "28",
+    label: "Districts Reached",
+    title: "All Across Malawi",
+  },
+  {
+    icon: "🌿",
+    num: "5K+",
+    label: "Active Members",
+    title: "Youth Conservation Force",
+  },
 ];
 
 export default function Hero() {
   const [current, setCurrent] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  const goTo = useCallback((idx: number) => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setCurrent(idx);
-    setTimeout(() => setIsAnimating(false), 1200);
-  }, [isAnimating]);
+  const goTo = useCallback(
+    (idx: number) => {
+      if (isAnimating) return;
+      setIsAnimating(true);
+      setCurrent(idx);
+      setTimeout(() => setIsAnimating(false), 1200);
+    },
+    [isAnimating],
+  );
 
-  const next = useCallback(() => goTo((current + 1) % slides.length), [current, goTo]);
-  const prev = useCallback(() => goTo((current - 1 + slides.length) % slides.length), [current, goTo]);
-
+  const next = useCallback(
+    () => goTo((current + 1) % slides.length),
+    [current, goTo],
+  );
+  const prev = useCallback(
+    () => goTo((current - 1 + slides.length) % slides.length),
+    [current, goTo],
+  );
 
   useEffect(() => {
     const t = setTimeout(next, 6000);
@@ -68,7 +90,7 @@ export default function Hero() {
             style={{ backgroundImage: `url('${slide.bg}')` }}
           />
           <div className="slide-overlay  bg-linear-to-b from-black via-transparent to-transparent" />
-           <div className="slide-overlay  bg-black opacity-70" />
+          <div className="slide-overlay  bg-black opacity-60" />
           {/* Content — only render for active */}
           {i === current && (
             <div className="relative inset-0 flex items-center z-10 pt-24 sm:pt-24">
@@ -117,7 +139,10 @@ export default function Hero() {
 
                   {/* Buttons */}
                   <div className="slide-btns flex flex-wrap gap-3 ">
-                    <Link href={slide.cta1.href} className=  "bg-yellow-600 hover:bg-yellow-700">
+                    <Link
+                      href={slide.cta1.href}
+                      className="bg-yellow-600 hover:bg-yellow-700"
+                    >
                       <span
                         className="inline-flex items-center gap-2 font-semibold px-7 py-3.5 text-sm tracking-wide cursor-pointer"
                         style={{
@@ -152,8 +177,6 @@ export default function Hero() {
         </div>
       ))}
 
-    
-
       {/* Dots */}
       <div
         className="absolute z-20 flex gap-2"
@@ -168,7 +191,6 @@ export default function Hero() {
           />
         ))}
       </div>
-
-         </section>
+    </section>
   );
 }

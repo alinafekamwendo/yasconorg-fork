@@ -8,21 +8,21 @@ const profiles = [
     description:
       "To create a Green Heart Of Africa joined with passionate youth towards natural conservation.",
     image: "/hero/hero5.png",
-    href: "/MissionStatement/vision",
+    href: "#",
   },
   {
     title: "OUR MISSION",
     description:
       "Making Youth be at the fore front in Environmental Conservation in all parts of Malawi.",
     image: "/hero/hero4.png",
-    href: "/MissionStatement/Mission",
+    href: "#",
   },
   {
-    title: "OUR VALUES",
+    title: "CORE VALUES",
     description:
       "Youth Empowerment, Environmental Education, Climate Action, and Biodiversity Protection ",
     image: "/hero/hero.png",
-    href: "/MissionStatement/Objectives",
+    href: "#",
   },
 ];
 
