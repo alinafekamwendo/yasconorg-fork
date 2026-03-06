@@ -25,9 +25,12 @@ const navItems = [
       title: "National Office",
       links: [
         { href: "/work", label: "Our Work" },
-        { href: "/programs", label: "National Programs" },
-        { href: "/partners", label: "National Partners" },
-        { href: "/stats", label: "National Statistical Data" },
+        { href: "/impact/national#programs", label: "National Programs" },
+        { href: "/impact/national#partners", label: "National Partners" },
+        {
+          href: "/impact/national#statistics",
+          label: "National Statistical Data",
+        },
       ],
     },
   },
