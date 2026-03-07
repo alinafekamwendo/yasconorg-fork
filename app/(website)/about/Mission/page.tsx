@@ -66,12 +66,12 @@ export default function MissionStatement() {
                   <div>
                     <Link
                       href={profile.href}
-                      className="text-l font-semibold text-gray-900 mb-3 block hover:text-green-700 transition-colors"
+                      className="text-xl font-semibold text-gray-900 mb-3 block hover:text-green-700 transition-colors"
                     >
                       {profile.title}
                     </Link>
                   </div>
-                  <p className="text-sm text-gray-700 text-base ">
+                  <p className="text-md text-gray-700 text-base ">
                     {profile.description}
                   </p>
                 </div>
