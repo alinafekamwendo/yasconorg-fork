@@ -11,13 +11,12 @@ const navItems = [
     dropdown: {
       title: "About YASCON",
       links: [
-        { href: "/", label: "Home" },
-        { href: "/about/OurStory", label: "Our Story" },
-        { href: "/about/Mission", label: "Mission & Vision" },
+        { href: "/about/Mission", label: "Vision & Mission" },
         { href: "/about/Objectives", label: "Objectives" },
         { href: "/about/Location", label: "Where We Work" },
         { href: "/about/Work", label: "Our Work" },
         { href: "/about/Team", label: "Our Team" },
+        { href: "/about/OurStory", label: "Our Story" },
         { href: "/contact", label: "Contact Us" },
       ],
     },
@@ -29,12 +28,9 @@ const navItems = [
       links: [
         { href: "/impact/national/board", label: "Board" },
         { href: "/impact/national/management", label: "Management" },
-        { href: "/impact/national/programs", label: "National Programs" },
-        { href: "/impact/national/partners", label: "National Partners" },
-        {
-          href: "/impact/national/statistics",
-          label: "National Statistical Data",
-        },
+        { href: "/impact/national/partners", label: "Partners" },
+        { href: "/impact/national/programs", label: "Programs" },
+        { href: "/impact/national/statistics", label: "Statistics" },
       ],
     },
   },
@@ -57,7 +53,10 @@ const navItems = [
       links: [
         { href: "/news", label: "National News" },
         { href: "/news/regions", label: "Regional Stories" },
-        { href: "/news/videos", label: "Videos" },
+        { href: "/news/press-releases", label: "Press Releases" },
+        { href: "/news/statements", label: "Statements" },
+        { href: "/news/gallery", label: "Gallery" },
+        { href: "/careers", label: "Careers" },
       ],
     },
   },
@@ -94,36 +93,12 @@ export default function Navbar() {
           useTransparentStyle ? "bg-transparent " : "bg-white shadow-md"
         } `}
       >
-        {/* Top info bar */}
-        {/* {!scrolled && (
-          <div className=" text-white text-xs py-4 px-4 hidden md:block">
-            <div className="max-w-7xl mx-auto flex justify-between items-center">
-              <div className="flex gap-6">
-                <span>📞 +265 (0) 885284321</span>
-                <span>✉ yasconmw@outlook.com</span>
-              </div>
-              <div className="flex gap-4 items-center">
-                <a href="https://web.facebook.com/nyascon" target="_blank" rel="noreferrer" className="hover:text-[#d4a017] transition-colors">
-                  Facebook
-                </a>
-                <span className="text-white/30">|</span>
-                <a href="#newsletter" className="hover:text-[#d4a017] transition-colors">
-                  Get Updates
-                </a>
-              </div>
-            </div>
-          </div>
-        )}  */}
-
         <div
           className={`max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between ${scrolled ? "h-16" : "h-20"} transition-all duration-300`}
         >
           {/* Logo */}
-          <Link
-            href="/"
-            className="hidden items-center gap-3 shrink-0  sm:flex"
-          >
-            <div className="relative w-16 h-16 ">
+          <Link href="/" className="hidden items-center gap-3 shrink-0 sm:flex">
+            <div className="relative w-16 h-16">
               <Image
                 src="/yascon-logo.png"
                 alt="YASCON Logo"
@@ -140,13 +115,13 @@ export default function Navbar() {
               <div
                 className={`text-xs ${useTransparentStyle ? "text-white/80" : "text-gray-500"} leading-tight max-w-[160px]`}
               >
-                 Youth Organization for Conservation of Nature and Environment
+                Youth Organization for Conservation of Nature and Environment
               </div>
             </div>
           </Link>
 
           {/* Desktop Nav */}
-          <div className={`hidden lg:flex items-center gap-1 `}>
+          <div className={`hidden lg:flex items-center gap-1`}>
             {navItems.map((item, idx) => (
               <div
                 key={idx}
@@ -177,8 +152,8 @@ export default function Navbar() {
 
                 {/* Dropdown */}
                 {activeDropdown === idx && (
-                  <div className="dropdown-enter absolute top-full left-1/2 mt-2 w-64 translate-x-[+25%] bg-white  shadow-2xl border border-gray-100 overflow-hidden z-50">
-                    <div className=" px-4 pt-4">
+                  <div className="dropdown-enter absolute top-full left-1/2 mt-2 w-64 translate-x-[+25%] bg-white shadow-2xl border border-gray-100 overflow-hidden z-50">
+                    <div className="px-4 pt-4">
                       <p className="text-gray-800 text-xs font-bold uppercase tracking-widest">
                         {item.dropdown.title}
                       </p>
@@ -222,7 +197,7 @@ export default function Navbar() {
 
           {/* Mobile hamburger */}
           <button
-            className={`lg:hidden p-2 ${useTransparentStyle ? "text-white" : "text-[#1a2e1a]"} `}
+            className={`lg:hidden p-2 ${useTransparentStyle ? "text-white" : "text-[#1a2e1a]"}`}
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Menu"
           >
@@ -241,7 +216,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="mobile-menu-enter fixed inset-0 z-40 bg-gray-900 pt-8  overflow-y-auto lg:hidden">
+        <div className="mobile-menu-enter fixed inset-0 z-40 bg-gray-900 pt-8 overflow-y-auto lg:hidden">
           <div className="p-6">
             {navItems.map((item, idx) => (
               <div key={idx} className="border-b border-white/10 pb-4 mb-4">
