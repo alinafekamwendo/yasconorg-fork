@@ -43,27 +43,25 @@ export default function Objective() {
           </div>
 
           <div className="p-8 md:w-3/4">
-           <ol className="list-decimal list inside pl-5 ">
-          
-            {Objectives.map((Objective, idx) => (
-              <div key={idx} className="group block list-disk pb-4">
-                <h2 className="text-xl font-bold text-gray-900 mb-2">
-                  <Link
-                    href="#"
-                    className="text-l font-bold text-gray-900 mb-3 block hover:text-green-700 transition-colors"
-                  >
-                    {Objective.title}
-                  </Link>
-                </h2>
-               
-                 
+            <ol className="list-decimal list inside pl-5 ">
+              {Objectives.map((Objective, idx) => (
+                <div key={idx} className="group block list-disk pb-4">
+                  <h2 className="text-xl font-bold text-gray-900 mb-2">
+                    <Link
+                      href="#"
+                      className="text-l font-bold text-gray-900 mb-3 block hover:text-green-700 transition-colors"
+                    >
+                      {Objective.title}
+                    </Link>
+                  </h2>
+
+                  <li>
                     <p className="text-md text-gray-600 leading-relaxed">
-                     <li> {Objective.description}  </li>
+                      {Objective.description}
                     </p>
-                
-                
-              </div>
-            ))}
+                  </li>
+                </div>
+              ))}
             </ol>
           </div>
         </div>
