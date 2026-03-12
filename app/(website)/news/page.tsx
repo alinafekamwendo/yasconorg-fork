@@ -40,7 +40,7 @@ const stories: NewsItem[] = [
       "Through drama and creative arts, youth clubs are communicating urgent environmental messages in local communities.",
     date: "February 10, 2026",
     tag: "Blog",
-    image: "/our-work/work2.avif",
+    image: "/our-work/work5.jpg",
     author: "Field Programs Team",
   },
   {
