@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 
 const ACCENT = "#b8860b";
-const heroImages = ["/Images/Eastern1.png", "/Images/Eastern2.png", "/Images/Eastern3.png"];
+const heroImages = ["/Images/Eastern1.png", "/Images/Eastern2.png", "/Images/Eastern3.jpg"];
 
 const stats = [
   { value: 6,    suffix: "",  label: "Districts",     desc: "Under Northern Coverage" },
