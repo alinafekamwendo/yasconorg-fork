@@ -90,30 +90,34 @@ export default function Navbar() {
     <>
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          useTransparentStyle ? "bg-transparent " : "bg-white shadow-md"
-        } `}
+          useTransparentStyle ? "bg-transparent" : "bg-white shadow-md"
+        }`}
       >
         <div
           className={`max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between ${scrolled ? "h-16" : "h-20"} transition-all duration-300`}
         >
           {/* Logo */}
-          <Link href="/" className="hidden items-center gap-3 shrink-0 sm:flex">
+          <Link href="/" className="flex items-center gap-3 shrink-0">
             <div className="relative w-16 h-16">
               <Image
-                src="/yascon-logo.png"
+                src="/Log.png"
                 alt="YASCON Logo"
                 fill
                 className="object-contain rounded-full"
               />
             </div>
-            <div className={`hidden sm:block transition-all duration-300`}>
+            <div className="hidden sm:block transition-all duration-300">
               <div
-                className={`font-bold tracking-widest ${useTransparentStyle ? "text-white text-sm" : "text-green-600 text-sm"}`}
+                className={`font-bold tracking-widest text-sm ${
+                  useTransparentStyle ? "text-white" : "text-green-600"
+                }`}
               >
                 YASCON
               </div>
               <div
-                className={`text-xs ${useTransparentStyle ? "text-white/80" : "text-gray-500"} leading-tight max-w-[160px]`}
+                className={`text-xs leading-tight max-w-[160px] ${
+                  useTransparentStyle ? "text-white/80" : "text-gray-500"
+                }`}
               >
                 Youth Association for Conservation of Nature and Environment
               </div>
@@ -121,17 +125,17 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <div className={`hidden lg:flex items-center gap-1`}>
+          <div className="hidden lg:flex items-center gap-1">
             {navItems.map((item, idx) => (
               <div
                 key={idx}
-                className={`relative`}
+                className="relative"
                 onMouseEnter={() => handleMouseEnter(idx)}
                 onMouseLeave={handleMouseLeave}
               >
                 <button
                   className={`flex items-center gap-1 px-4 py-2 text-sm font-semibold tracking-wide nav-link transition-colors ${
-                    useTransparentStyle ? "text-white " : "text-gray-800 "
+                    useTransparentStyle ? "text-white" : "text-gray-800"
                   } ${activeDropdown === idx ? "bg-green-600 rounded-t-md" : ""}`}
                 >
                   {item.label}
@@ -218,6 +222,24 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="mobile-menu-enter fixed inset-0 z-40 bg-gray-900 pt-8 overflow-y-auto lg:hidden">
           <div className="p-6">
+            {/* Mobile Logo */}
+            <div className="flex items-center gap-3 mb-8">
+              <div className="relative w-12 h-12">
+                <Image
+                  src="/Log.png"
+                  alt="YASCON Logo"
+                  fill
+                  className="object-contain rounded-full"
+                />
+              </div>
+              <div>
+                <div className="font-bold tracking-widest text-white text-sm">YASCON</div>
+                <div className="text-xs text-white/60 leading-tight max-w-[160px]">
+                  Youth Association for Conservation of Nature and Environment
+                </div>
+              </div>
+            </div>
+
             {navItems.map((item, idx) => (
               <div key={idx} className="border-b border-white/10 pb-4 mb-4">
                 <p className="text-[#d4a017] font-bold uppercase tracking-widest text-xs mb-3">

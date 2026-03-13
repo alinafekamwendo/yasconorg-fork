@@ -30,28 +30,6 @@ const slides = [
   },
 ];
 
-const stripItems = [
-  { icon: "👥", num: "50+", label: "Youth Clubs", title: "Nationwide Network" },
-  {
-    icon: "🌳",
-    num: "10K+",
-    label: "Trees Planted",
-    title: "Reforestation Impact",
-  },
-  {
-    icon: "📍",
-    num: "28",
-    label: "Districts Reached",
-    title: "All Across Malawi",
-  },
-  {
-    icon: "🌿",
-    num: "5K+",
-    label: "Active Members",
-    title: "Youth Conservation Force",
-  },
-];
-
 export default function Hero() {
   const [current, setCurrent] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -81,35 +59,37 @@ export default function Hero() {
   }, [current, next]);
 
   return (
-    <section className="relative w-full h-svh min-h-170 overflow-hidden ">
+    <section className="relative w-full h-svh min-h-170 overflow-hidden">
       {/* Slides */}
       {slides.map((slide, i) => (
         <div key={i} className={`slide ${i === current ? "active" : ""}`}>
           <div
-            className="slide-bg "
+            className="slide-bg"
             style={{ backgroundImage: `url('${slide.bg}')` }}
           />
-          <div className="slide-overlay  " />
-          <div className="slide-overlay  " />
+          <div className="slide-overlay" />
+          <div className="slide-overlay" />
+
           {/* Content — only render for active */}
           {i === current && (
             <div className="relative inset-0 flex items-center z-10 pt-24 sm:pt-24">
               <div className="max-w-7xl mx-auto px-6 sm:px-8 w-full">
                 <div className="max-w-2xl">
-                  {/* Badge */}
+
+                  {/* Badge — improved visibility */}
                   <div className="slide-label mb-5">
                     <span
-                      className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] px-4 py-1.5"
+                      className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] px-5 py-2"
                       style={{
-                        background: "rgba(212,160,23,.15)",
-                        border: "1px solid rgba(212,160,23,.4)",
-                        color: "#d4a017",
-                        borderRadius: "2px",
+                        background: "#d4a017",
+                        color: "#fff",
+                        borderRadius: "3px",
+                        boxShadow: "0 2px 12px rgba(212,160,23,0.5)",
+                        letterSpacing: "0.18em",
                       }}
                     >
                       <span
-                        className="w-1.5 h-1.5 rounded-full"
-                        style={{ background: "#d4a017" }}
+                        className="w-2 h-2 rounded-full bg-white animate-pulse"
                       />
                       {slide.label}
                     </span>
@@ -118,9 +98,7 @@ export default function Hero() {
                   {/* Heading */}
                   <h1
                     className="slide-h1 text-white text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.08] mb-6"
-                    style={{
-                      whiteSpace: "pre-line",
-                    }}
+                    style={{ whiteSpace: "pre-line" }}
                   >
                     {slide.heading}
                   </h1>
@@ -138,7 +116,7 @@ export default function Hero() {
                   </p>
 
                   {/* Buttons */}
-                  <div className="slide-btns flex flex-wrap gap-3 ">
+                  <div className="slide-btns flex flex-wrap gap-3">
                     <Link
                       href={slide.cta1.href}
                       className="bg-yellow-600 hover:bg-yellow-700"
