@@ -1631,6 +1631,11 @@ export type CmsAnnouncementFindManyArgs<ExtArgs extends runtime.Types.Extensions
    * Skip the first `n` CmsAnnouncements.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of CmsAnnouncements.
+   */
   distinct?: Prisma.CmsAnnouncementScalarFieldEnum | Prisma.CmsAnnouncementScalarFieldEnum[]
 }
 

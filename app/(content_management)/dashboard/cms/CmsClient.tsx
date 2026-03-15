@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import DashboardSidebar from "@/components/cms/DashboardSidebar";
 import UnifiedContentForm from "@/components/cms/UnifiedContentForm";
@@ -236,7 +236,7 @@ export default function CmsClient({ initialUser }: Props) {
   }
 
   return (
-    <div className="flex min-h-screen  bg-slate-50">
+    <div className="flex min-h-screen mt-8 bg-slate-50">
       {/* Sidebar */}
       <DashboardSidebar
         user={user}
@@ -247,7 +247,24 @@ export default function CmsClient({ initialUser }: Props) {
       />
 
       {/* Main Content */}
-      <main className="flex-1 md:ml-64 p-6 md:p-8">
+      <main className="flex-1 md:ml-64 pt-16 p-6 mt-7 md:p-8">
+            <header className="fixed top-0 left-0  right-0 z-40 bg-[#1a2e1a] text-white border-b  border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-[#d4a017]">
+              YASCON
+            </p>
+            <p className="text-sm font-semibold">Content Management</p>
+          </div>
+          <Link
+            href="/"
+            className="text-sm font-medium text-white/85 hover:text-white"
+          >
+            Back to Website
+          </Link>
+        </div>
+      </header>
+      
         {/* Message Alert */}
         {message && (
           <div

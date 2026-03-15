@@ -1,6 +1,7 @@
 import { Roboto } from "next/font/google";
 import "./globals.css";
 import { Metadata } from "next";
+import { QueryProvider } from "@/lib/query/QueryProvider";
 
 export const metadata: Metadata = {
   title: "YASCON - Youth Association for Conservation of Nature and Environment",
@@ -24,7 +25,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={roboto.variable}>
-      <body className="font-sans antialiased">{children}</body>
+      <body className="font-sans antialiased">
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }

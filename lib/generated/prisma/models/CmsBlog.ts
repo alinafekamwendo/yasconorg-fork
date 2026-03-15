@@ -1619,6 +1619,11 @@ export type CmsBlogFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Skip the first `n` CmsBlogs.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of CmsBlogs.
+   */
   distinct?: Prisma.CmsBlogScalarFieldEnum | Prisma.CmsBlogScalarFieldEnum[]
 }
 

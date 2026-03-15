@@ -101,7 +101,7 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-5">
               <Image
-                src="/yascon-logo.png"
+                src="/Log.png"
                 alt="YASCON Logo"
                 width={54}
                 height={54}

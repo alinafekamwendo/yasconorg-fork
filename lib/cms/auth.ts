@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { getPrismaClient } from "./db";
+import { getPrismaClient ,ensureCmsSchema} from "./db";
 import { CMS_SESSION_COOKIE, type CmsUserRecord } from "./constants";
 import {
   generateSessionToken,
@@ -11,6 +11,9 @@ import {
 const SESSION_DAYS = 7;
 
 export async function authenticateUser(email: string, password: string) {
+  if(email === process.env.CMS_SUPERADMIN_EMAIL && password === process.env.CMS_SUPERADMIN_PASSWORD) {  
+  await ensureCmsSchema();
+  }
   const client = getPrismaClient();
   const normalizedEmail = email.toLowerCase().trim();
 

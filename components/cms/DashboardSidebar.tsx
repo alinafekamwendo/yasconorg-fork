@@ -29,7 +29,7 @@ export default function DashboardSidebar({
   ];
 
   return (
-    <>
+    <section className="flex min-h-screen z-70">
       {/* Mobile Toggle */}
       <button
         onClick={() => setIsMobileOpen(!isMobileOpen)}
@@ -101,6 +101,6 @@ export default function DashboardSidebar({
           onClick={() => setIsMobileOpen(false)}
         />
       )}
-    </>
+    </section>
   );
 }

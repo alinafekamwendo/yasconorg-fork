@@ -1167,6 +1167,11 @@ export type CmsSessionFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Skip the first `n` CmsSessions.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of CmsSessions.
+   */
   distinct?: Prisma.CmsSessionScalarFieldEnum | Prisma.CmsSessionScalarFieldEnum[]
 }
 

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import NewsDisplay from "@/components/cms/NewsDisplay";
 
 type NewsItem = {
   slug: string;

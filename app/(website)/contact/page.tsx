@@ -5,7 +5,7 @@ import { RiWhatsappFill } from "react-icons/ri";
 import { RiMailFill } from "react-icons/ri";
 
 // Contact Us Page
-//this page can be accessed by clicking the "Contact Us" link in the footer or header navigation.
+
 
 export default function ContactPage() {
   return (
@@ -15,7 +15,7 @@ export default function ContactPage() {
         <div className="max-w-6xl mx-auto px-6 text-center">
           <div className="flex justify-center mb-6">
             <Image
-              src="/yascon-logo.png"
+              src="/Log.png"
               alt="YASCON Logo"
               width={120}
               height={120}

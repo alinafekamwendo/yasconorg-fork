@@ -1619,6 +1619,11 @@ export type CmsNewsFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Skip the first `n` CmsNews.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of CmsNews.
+   */
   distinct?: Prisma.CmsNewsScalarFieldEnum | Prisma.CmsNewsScalarFieldEnum[]
 }
 
