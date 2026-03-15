@@ -90,7 +90,7 @@ export default function Navbar() {
     <>
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          useTransparentStyle ? "bg-transparent" : "bg-white shadow-md"
+          useTransparentStyle ? "bg-transparent " : "bg-white shadow-md"
         }`}
       >
         <div
@@ -125,7 +125,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden lg:flex items-center gap-1">
+          <div className={`hidden lg:flex items-center gap-1 ${useTransparentStyle ? " bg-black/70 rounded-full px-5 py-1" : ""}`}>
             {navItems.map((item, idx) => (
               <div
                 key={idx}
