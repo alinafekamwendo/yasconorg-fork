@@ -41,7 +41,7 @@ export default function NewsSlugPage({ params }: PageProps) {
 
   if (isLoading) {
     return (
-      <main className="min-h-screen bg-[#f7f3ea] pt-24">
+      <main className="min-h-screen bg-[#f7f3ea] pt-0.5">
         <div className="max-w-4xl mx-auto px-6 py-20 text-center">
           <BeatLoader
             color="#1a2e1a"
@@ -56,7 +56,7 @@ export default function NewsSlugPage({ params }: PageProps) {
 
   if (error || !news) {
     return (
-      <main className="min-h-screen bg-[#f7f3ea] pt-24">
+      <main className="min-h-screen bg-[#f7f3ea] pt-0.5">
         <div className="max-w-4xl mx-auto px-6 py-20 text-center">
           <h1 className="text-3xl font-bold text-slate-900 mb-4">News not found</h1>
           <Link href="/news" className="text-green-600 hover:text-green-700 font-semibold">
@@ -68,7 +68,7 @@ export default function NewsSlugPage({ params }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-[#f7f3ea] pt-24">
+    <main className="min-h-screen bg-[#f7f3ea] pt-0.5">
       {/* Hero Cover */}
       {news.coverImage && (
         <div className="relative h-96 md:h-[500px]">

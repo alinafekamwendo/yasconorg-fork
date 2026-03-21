@@ -138,7 +138,7 @@ export default function Footer() {
                   target={s.href.startsWith("http") ? "_blank" : undefined}
                   rel="noreferrer"
                   aria-label={s.name}
-                  className="footer-social-btn"
+                  className="footer-social-btn ]"
                 >
                   {s.icon}
                 </a>

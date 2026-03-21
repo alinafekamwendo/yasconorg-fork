@@ -28,11 +28,11 @@ const navItems = [
     dropdown: {
       title: "National Office",
       links: [
-        { href: "/impact/national/board", label: "Board" },
         { href: "/about/management", label: "Management" },
         { href: "/impact/national/partners", label: "Partners" },
         { href: "/impact/national/programs", label: "Programs" },
         { href: "/impact/national/statistics", label: "Statistics" },
+        { href: "/impact/national/reports", label: "Annual Reports" },
       ],
     },
   },
@@ -271,11 +271,11 @@ export default function Navbar() {
             ))}
             <div className="flex flex-col gap-3 mt-6">
               <Link
-                href="/tickets"
+                href="/get-involved"
                 className="text-center bg-[#f5a524] text-white py-3 rounded-sm font-bold hover:bg-[#e3910c] transition-colors"
                 onClick={() => setMobileOpen(false)}
               >
-                Buy Tickets
+                Get Involved
               </Link>
               <Link
                 href="/contact"

@@ -30,19 +30,15 @@ export default function MissionPage() {
         <div className="absolute inset-0 bg-black/10 " />
 
         <div className="relative max-w-4xl mx-auto">
-          <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-[#d4a017]">
-            <span className="h-px w-5 bg-[#d4a017]" />
+          <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-[#d4a017]  bg-[#1a2e1a]/[.8] px-3 py-2 rounded-full">
+            <span className="h-px w-5 bg-[#d4a017] " />
             Profile
             <span className="h-px w-5 bg-[#d4a017]/60" />
           </span>
           <h1 className="text-4xl md:text-5xl font-extrabold mt-4 mb-5 drop-shadow-lg">
             Mission Statement
           </h1>
-          <p className="text-base md:text-lg text-white/85 max-w-2xl mx-auto leading-relaxed">
-            We believe the future of our planet lies in the hands of today's
-            youth. At the heart of our work is a commitment to inspire, educate,
-            and empower young people to become active stewards of the environment.
-          </p>
+          
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <span className="rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm backdrop-blur-sm">
               Education
@@ -60,13 +56,17 @@ export default function MissionPage() {
           <div className="w-12 h-[3px] bg-[#d4a017] mt-8 mx-auto rounded-sm shadow-lg shadow-[#d4a017]/40" />
         </div>
       </section>
-
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+  <div className="text-5xl  text-[#d4a017] text-center font-bold mt-2"><span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-[#d4a017] ">
+            <span className="h-px w-5 bg-[#d4a017] " />
+            Our Profiles
+            <span className="h-px w-5 bg-[#d4a017]/60" />
+          </span></div>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {profiles.map((profile, idx) => (
             <div
               key={idx}
-              className="group rounded-md overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all bg-white/90 backdrop-blur-sm"
+              className="group overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all bg-white/90 backdrop-blur-sm"
             >
               <div className="relative h-52 w-full">
                 <Image

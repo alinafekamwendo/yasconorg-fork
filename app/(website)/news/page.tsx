@@ -119,7 +119,7 @@ function Tag({ value }: { value: NewsItem["tag"] }) {
 
 export default function NewsroomPage() {
   return (
-    <main className="bg-[#f7f3ea] pt-24">
+    <main className="bg-[#f7f3ea] min-h-screen pt-0.5">
       <section className="bg-[#1a2e1a] text-white">
         <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
           <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#d4a017]">Newsroom</p>

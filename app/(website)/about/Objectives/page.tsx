@@ -11,16 +11,16 @@ const objectives = [
 export default function ObjectivesPage() {
   return (
     <main className="min-h-screen bg-white mt-0.5">
-      <section className="bg-[url(/team/heavy-forest1.avif)] bg-cover text-[#1a2e1a] min-h-screen text-white py-24 px-4 text-center">
-        <span className="text-xs font-bold uppercase tracking-widest text-[#d4a017]">
+      <section className="bg-[url(/team/heavy-forest1.avif)] bg-cover bg-center text-[#1a2e1a]  text-white py-24 px-4 text-center">
+        <span className="text-sm font-bold uppercase tracking-widest text-[#d4a017] bg-[#1a2e1a]/[.8] px-3 py-2 rounded-full">
           — What We Stand For —
         </span>
         <h1 className="text-4xl md:text-5xl font-bold mt-3 mb-4">Key Objectives</h1>
         <div className="w-11 h-[3px] bg-[#d4a017] mt-4 mx-auto rounded-sm" />
       </section>
-
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
-        <div className="rounded-xl overflow-hidden shadow-lg md:flex bg-white border border-gray-100">
+    <div className="text-5xl text-[#d4a017] text-center font-bold mt-2">...</div>
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-8 ">
+        <div className=" overflow-hidden shadow-lg md:flex bg-white border border-gray-100">
           <div className="md:w-1/3 relative min-h-64">
             <Image src="/hero/hero1.png" alt="YASCON in Action" fill className="object-cover brightness-75" />
           </div>

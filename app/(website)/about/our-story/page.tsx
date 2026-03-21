@@ -18,23 +18,25 @@ const stories = [
 export default function OurStoryPage() {
   return (
     <main className="min-h-screen bg-white ">
-      <section className="bg-green-950 text-white py-20 px-4 text-center">
-        <span className="text-xs font-bold uppercase tracking-widest text-[#d4a017]">
+      <section className="bg-transparent text-green-950 py-8 px-4 ">
+        <span className="text-xs font-bold uppercase tracking-widest text-[#d4a017] bg-green-950 px-2 py-1 rounded-full">
           — Who We Are —
         </span>
         <h1 className="text-4xl md:text-5xl font-bold mt-3 mb-4">Our Story</h1>
-        <div className="w-11 h-[3px] bg-[#d4a017] mt-4 mx-auto rounded-sm" />
+        <div className="w-11 h-[3px] bg-[#d4a017] mt-4  rounded-sm" />
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-8 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        
         <div>
+               
           {stories.map((story, idx) => (
             <p key={idx} className="text-gray-600 leading-relaxed mb-6 text-base">
               {story.description}
             </p>
           ))}
         </div>
-        <div className="rounded-xl overflow-hidden shadow-lg">
+        <div className="rounded-xl overflow-hidden shadow-lg h-full">
           <img src="/hero/hero4.png" alt="Our team" className="w-full h-full object-cover rounded-xl" />
         </div>
       </section>
