@@ -51,12 +51,9 @@ const navItems = [
    {
     label: "ENTERPRISES",
     dropdown: {
-      title: "Regional Hubs",
+      title: "Enterprises",
       links: [
-        { href: "/impact/northern", label: "Northern Region" },
-        { href: "/impact/central", label: "Central Region" },
-        { href: "/impact/southern", label: "Southern Region" },
-        { href: "/impact/eastern", label: "Eastern Region" },
+        
       ],
     },
   },
@@ -192,13 +189,13 @@ export default function Navbar() {
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
             <Link
-              href="/get-involved"
+              href="/donate"
               className="bg-[#f5a524] text-white text-sm font-bold px-3 py-2 rounded-sm shadow-lg hover:bg-[#e3910c] transition-colors"
             >
-              GET INVOLVED
+              DONATE
             </Link>
             <Link
-              href="/contact"
+              href="/partner-us"
               className={`border text-sm font-bold px-3 py-2 rounded-sm transition-all duration-200  
           border-green-700 text-white hover:bg-green-700 
               `}
@@ -283,18 +280,18 @@ export default function Navbar() {
             ))}
             <div className="flex flex-col gap-3 mt-6">
               <Link
-                href="/get-involved"
+                href="/donate"
                 className="text-center bg-[#f5a524] text-white py-3 rounded-sm font-bold hover:bg-[#e3910c] transition-colors"
                 onClick={() => setMobileOpen(false)}
               >
-                Get Involved
+                Donate
               </Link>
               <Link
-                href="/contact"
+                href="/partner-us"
                 className="text-center border border-white text-white py-3 rounded-sm font-bold hover:bg-white/10 transition-colors"
                 onClick={() => setMobileOpen(false)}
               >
-                Contact
+                Partner Us
               </Link>
             </div>
           </div>
