@@ -1,21 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import RichTextEditor from "./RichTextEditor";
 import { generateSlug } from "@/lib/cms/utils";
 import Image from "next/image";
 import { Upload } from "lucide-react";
 
 interface UnifiedContentFormProps {
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (data: ContentFormData) => Promise<void>;
   isLoading?: boolean;
-  initialData?: any;
+  initialData?: Partial<ContentFormData> & { id?: number; contentType?: string };
   regions: string[];
+  mode?: "create" | "edit";
+}
+
+export interface ContentFormData {
+  id?: number;
+  contentType: string;
+  title: string;
+  excerpt: string;
+  richContent: string;
+  region: string;
+  status: string;
+  coverImage: string;
+  videoUrl: string;
 }
 
 const CONTENT_TYPES = [
-  { value: "announcement", label: "Announcement" },
   { value: "news", label: "News" },
+  { value: "announcement", label: "Announcement" },
   { value: "press_briefing", label: "Press Briefing" },
   { value: "blog", label: "Blog" },
   { value: "video", label: "Video" },
@@ -26,158 +39,125 @@ export default function UnifiedContentForm({
   isLoading = false,
   initialData,
   regions,
+  mode = "create",
 }: UnifiedContentFormProps) {
-  const [contentType, setContentType] = useState(
-    initialData?.contentType || "news"
-  );
-  const [formData, setFormData] = useState({
+  const [contentType, setContentType] = useState(initialData?.contentType || "news");
+  const [formData, setFormData] = useState<ContentFormData>({
+    id: initialData?.id,
+    contentType: initialData?.contentType || "news",
     title: initialData?.title || "",
     excerpt: initialData?.excerpt || "",
     richContent: initialData?.richContent || "",
-    region: initialData?.region || regions[0],
+    region: initialData?.region || regions[0] || "national",
     status: initialData?.status || "draft",
     coverImage: initialData?.coverImage || "",
     videoUrl: initialData?.videoUrl || "",
   });
 
-  const [coverPreview, setCoverPreview] = useState<string | null>(
-    initialData?.coverImage || null
-  );
+  const [coverPreview, setCoverPreview] = useState<string | null>(initialData?.coverImage || null);
   const [uploading, setUploading] = useState(false);
 
-  const handleImageUpload = async (file: File): Promise<string> => {
-    const formDataObj = new FormData();
-    formDataObj.append("file", file);
-
-    const response = await fetch("/api/upload/image", {
-      method: "POST",
-      body: formDataObj,
+  // Re-hydrate when initialData changes (e.g. when user clicks Edit on a different item)
+  useEffect(() => {
+    if (!initialData) return;
+    const ct = initialData.contentType || "news";
+    setContentType(ct);
+    setFormData({
+      id: initialData.id,
+      contentType: ct,
+      title: initialData.title || "",
+      excerpt: initialData.excerpt || "",
+      richContent: initialData.richContent || "",
+      region: initialData.region || regions[0] || "national",
+      status: initialData.status || "draft",
+      coverImage: initialData.coverImage || "",
+      videoUrl: initialData.videoUrl || "",
     });
+    setCoverPreview(initialData.coverImage || null);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialData?.id]);
 
-    if (!response.ok) {
-      throw new Error("Failed to upload image");
-    }
+  const set = (key: keyof ContentFormData, val: string) =>
+    setFormData((prev) => ({ ...prev, [key]: val }));
 
-    const data = await response.json();
+  const handleImageUpload = async (file: File): Promise<string> => {
+    const fd = new FormData();
+    fd.append("file", file);
+    const res = await fetch("/api/upload/image", { method: "POST", body: fd });
+    if (!res.ok) throw new Error("Upload failed");
+    const data = await res.json();
     return data.url;
   };
 
-  const handleCoverImageChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      try {
-        setUploading(true);
-        const imageUrl = await handleImageUpload(file);
-        setFormData({ ...formData, coverImage: imageUrl });
-        setCoverPreview(imageUrl);
-      } catch (error) {
-        console.error("Cover image upload failed:", error);
-        alert("Failed to upload cover image");
-      } finally {
-        setUploading(false);
-      }
-    }
+    if (!file) return;
+    setUploading(true);
+    try {
+      const url = await handleImageUpload(file);
+      set("coverImage", url);
+      setCoverPreview(url);
+    } catch { alert("Cover image upload failed"); }
+    finally { setUploading(false); }
   };
 
-  const handleVideoUpload = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      try {
-        setUploading(true);
-        const formDataObj = new FormData();
-        formDataObj.append("file", file);
-
-        const response = await fetch("/api/upload/video", {
-          method: "POST",
-          body: formDataObj,
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to upload video");
-        }
-
-        const data = await response.json();
-        setFormData({ ...formData, videoUrl: data.url });
-      } catch (error) {
-        console.error("Video upload failed:", error);
-        alert("Failed to upload video");
-      } finally {
-        setUploading(false);
-      }
-    }
+    if (!file) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/upload/video", { method: "POST", body: fd });
+      if (!res.ok) throw new Error("Upload failed");
+      const data = await res.json();
+      set("videoUrl", data.url);
+    } catch { alert("Video upload failed"); }
+    finally { setUploading(false); }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!formData.title || !formData.excerpt || !formData.richContent) {
-      alert("Please fill in all required fields");
-      return;
-    }
-
-    if (contentType === "video" && !formData.videoUrl) {
-      alert("Please upload a video");
-      return;
-    }
-
+    if (!formData.title || !formData.excerpt || !formData.richContent)
+      return alert("Please fill in title, excerpt, and content");
+    if (contentType === "video" && !formData.videoUrl)
+      return alert("Please upload a video");
     await onSubmit({ ...formData, contentType });
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Content Type */}
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">
-            Content Type *
-          </label>
+          <label className="block text-sm font-semibold text-slate-700 mb-2">Content Type *</label>
           <select
             value={contentType}
-            onChange={(e) => setContentType(e.target.value)}
-            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            onChange={(e) => { setContentType(e.target.value); set("contentType", e.target.value); }}
+            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            disabled={mode === "edit"}
           >
-            {CONTENT_TYPES.map((type) => (
-              <option key={type.value} value={type.value}>
-                {type.label}
-              </option>
-            ))}
+            {CONTENT_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
           </select>
         </div>
 
-        {/* Region */}
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">
-            Region *
-          </label>
+          <label className="block text-sm font-semibold text-slate-700 mb-2">Region *</label>
           <select
             value={formData.region}
-            onChange={(e) =>
-              setFormData({ ...formData, region: e.target.value })
-            }
-            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            onChange={(e) => set("region", e.target.value)}
+            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           >
-            {regions.map((region) => (
-              <option key={region} value={region}>
-                {region.charAt(0).toUpperCase() + region.slice(1)}
-              </option>
-            ))}
+            {regions.map((r) => <option key={r} value={r}>{r.charAt(0).toUpperCase() + r.slice(1)}</option>)}
           </select>
         </div>
       </div>
 
-      {/* Status */}
       <div>
-        <label className="block text-sm font-semibold text-slate-700 mb-2">
-          Status
-        </label>
+        <label className="block text-sm font-semibold text-slate-700 mb-2">Status</label>
         <select
           value={formData.status}
-          onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-          className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          onChange={(e) => set("status", e.target.value)}
+          className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500"
         >
           <option value="draft">Draft</option>
           <option value="published">Published</option>
@@ -185,52 +165,38 @@ export default function UnifiedContentForm({
         </select>
       </div>
 
-      {/* Title */}
       <div>
-        <label className="block text-sm font-semibold text-slate-700 mb-2">
-          Title *
-        </label>
+        <label className="block text-sm font-semibold text-slate-700 mb-2">Title *</label>
         <input
           type="text"
           value={formData.title}
-          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+          onChange={(e) => set("title", e.target.value)}
           placeholder="Enter content title"
-          className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           required
         />
         {formData.title && (
-          <p className="text-xs text-slate-500 mt-1">
-            Slug: {generateSlug(formData.title)}
-          </p>
+          <p className="text-xs text-slate-500 mt-1">Slug: {generateSlug(formData.title)}</p>
         )}
       </div>
 
       {/* Cover Image */}
       <div>
-        <label className="block text-sm font-semibold text-slate-700 mb-2">
-          Cover Image
-        </label>
-        <div className="flex flex-col gap-4">
+        <label className="block text-sm font-semibold text-slate-700 mb-2">Cover Image</label>
+        <div className="flex flex-col gap-3">
           {coverPreview && (
-            <div className="relative w-full h-48">
-              <Image
-                src={coverPreview}
-                alt="Cover preview"
-                fill
-                className="object-cover rounded-lg"
-              />
+            <div className="relative w-full h-40 rounded-lg overflow-hidden">
+              <Image src={coverPreview} alt="Cover" fill className="object-cover" />
+              <button type="button" onClick={() => { setCoverPreview(null); set("coverImage", ""); }}
+                className="absolute top-2 right-2 bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700">
+                Remove
+              </button>
             </div>
           )}
-          <label className="flex items-center gap-3 px-4 py-3 border-2 border-dashed border-slate-300 rounded-lg hover:border-blue-400 hover:bg-blue-50 cursor-pointer transition-colors">
-            <Upload size={20} className="text-slate-400" />
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleCoverImageChange}
-              disabled={uploading}
-              className="hidden"
-            />
-            <span className="text-sm text-slate-600">{uploading ? "Uploading..." : "Click to upload cover image"}</span>
+          <label className="flex items-center gap-3 px-4 py-3 border-2 border-dashed border-slate-300 rounded-lg hover:border-blue-400 cursor-pointer transition-colors">
+            <Upload size={18} className="text-slate-400" />
+            <input type="file" accept="image/*" onChange={handleCoverChange} disabled={uploading} className="hidden" />
+            <span className="text-sm text-slate-600">{uploading ? "Uploading…" : "Click to upload cover image"}</span>
           </label>
         </div>
       </div>
@@ -238,86 +204,65 @@ export default function UnifiedContentForm({
       {/* Excerpt */}
       <div>
         <label className="block text-sm font-semibold text-slate-700 mb-2">
-          Excerpt * <span className="text-xs font-normal text-slate-500">(max 200 characters)</span>
+          Excerpt * <span className="text-xs font-normal text-slate-500">(max 300 chars)</span>
         </label>
         <textarea
           value={formData.excerpt}
-          onChange={(e) =>
-            setFormData({ ...formData, excerpt: e.target.value })
-          }
-          placeholder="Brief summary of the content"
-          maxLength={200}
-          rows={2}
-          className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          onChange={(e) => set("excerpt", e.target.value)}
+          placeholder="Brief summary"
+          maxLength={300}
+          rows={3}
+          className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           required
         />
-        <p className="text-xs text-slate-500 mt-1">
-          {formData.excerpt.length}/200 characters
-        </p>
+        <p className="text-xs text-slate-500 mt-1">{formData.excerpt.length}/300</p>
       </div>
 
-      {/* Rich Content Editor */}
+      {/* Rich Content — stored as HTML */}
       <div>
         <label className="block text-sm font-semibold text-slate-700 mb-2">
-          Content * <span className="text-xs font-normal text-slate-500">(Rich text editor)</span>
+          Content * <span className="text-xs font-normal text-slate-500">(WYSIWYG — saved as HTML)</span>
         </label>
         <RichTextEditor
           value={formData.richContent}
-          onChange={(content) =>
-            setFormData({ ...formData, richContent: content })
-          }
+          onChange={(html) => set("richContent", html)}
           onImageUpload={handleImageUpload}
-          placeholder="Write your detailed content here..."
+          placeholder="Write your content here…"
         />
       </div>
 
-      {/* Video Upload (only for video type) */}
+      {/* Video upload */}
       {contentType === "video" && (
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">
-            Video Upload * <span className="text-xs font-normal text-slate-500">(Max 100MB)</span>
-          </label>
+          <label className="block text-sm font-semibold text-slate-700 mb-2">Video *</label>
           {formData.videoUrl ? (
             <div className="flex items-center gap-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
-              <div className="text-emerald-700 font-semibold">✓ Video uploaded</div>
-              <button
-                type="button"
-                onClick={() => setFormData({ ...formData, videoUrl: "" })}
-                className="px-4 py-2 text-sm text-red-600 hover:text-red-700 border border-red-300 rounded transition-colors"
-              >
+              <span className="text-emerald-700 font-semibold text-sm">✓ Video uploaded</span>
+              <button type="button" onClick={() => set("videoUrl", "")}
+                className="px-3 py-1 text-xs text-red-600 border border-red-300 rounded hover:bg-red-50">
                 Remove
               </button>
             </div>
           ) : (
-            <label className="flex items-center gap-3 px-4 py-3 border-2 border-dashed border-slate-300 rounded-lg hover:border-blue-400 hover:bg-blue-50 cursor-pointer transition-colors">
-              <Upload size={20} className="text-slate-400" />
-              <input
-                type="file"
-                accept="video/*"
-                onChange={handleVideoUpload}
-                disabled={uploading}
-                className="hidden"
-                required
-              />
-              <span className="text-sm text-slate-600">{uploading ? "Uploading video..." : "Click to upload video file"}</span>
+            <label className="flex items-center gap-3 px-4 py-3 border-2 border-dashed border-slate-300 rounded-lg hover:border-blue-400 cursor-pointer transition-colors">
+              <Upload size={18} className="text-slate-400" />
+              <input type="file" accept="video/*" onChange={handleVideoUpload} disabled={uploading} className="hidden" />
+              <span className="text-sm text-slate-600">{uploading ? "Uploading video…" : "Click to upload video"}</span>
             </label>
           )}
         </div>
       )}
 
-      {/* Submit Buttons */}
-      <div className="flex gap-4 pt-6 border-t border-slate-200">
+      <div className="flex gap-4 pt-4 border-t border-slate-200">
         <button
           type="submit"
           disabled={isLoading || uploading}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-slate-400 font-semibold transition-colors"
+          className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-slate-400 font-semibold transition-colors"
         >
-          {isLoading ? "Saving..." : initialData ? "Update" : "Create"}
+          {isLoading ? "Saving…" : mode === "edit" ? "Update Content" : "Create Content"}
         </button>
-        <button
-          type="reset"
-          className="px-6 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 font-semibold transition-colors text-slate-700"
-        >
+        <button type="reset" onClick={() => { setFormData({ id: undefined, contentType: "news", title: "", excerpt: "", richContent: "", region: regions[0], status: "draft", coverImage: "", videoUrl: "" }); setCoverPreview(null); }}
+          className="px-6 py-2.5 border border-slate-300 rounded-lg hover:bg-slate-50 font-semibold text-slate-700">
           Reset
         </button>
       </div>

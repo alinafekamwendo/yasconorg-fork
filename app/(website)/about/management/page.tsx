@@ -12,7 +12,7 @@ type Member = {
 const nationalCoordinator: Member = {
   name: "Mwai Mtayamanja",
   role: "National Coordinator",
-  avatar: "/teampics/national-coordinator.png",
+  avatar: "/teampics/national-coordinator.webp",
   focus: "Guides strategy, partnerships, and nationwide program delivery.",
   bio: "A distinguished anthropologist and dedicated young conservation leader, co-founder of YASCON, and a prominent advocate for youth empowerment. His work focuses on harnessing youth leadership to drive conservation and promote sustainable development in Malawi. Through entrepreneurship, innovation, and research, Mwai aims to create opportunities for young people to thrive and realise their full potential.",
 };
@@ -22,63 +22,63 @@ const team: Member[] = [
     name: "Clement Chiwambo",
     role: "Funding & Compliance Manager",
     joined: "2025",
-    avatar: "/teampics/funding-officer.png",
+    avatar: "/teampics/funding-officer.webp",
     focus: "Stewards grants, reporting, and donor relationships.",
   },
   {
     name: "Rashid Mailos",
     role: "Extension Methodologies Manager",
     joined: "2025",
-    avatar: "/teampics/extensions-officer.png",
+    avatar: "/teampics/extensions-officer.webp",
     focus: "Designs youth-led field methods and monitoring tools.",
   },
   {
     name: "Salomy Chivunga",
     role: "Public Relations & Events Manager",
     joined: "2025",
-    avatar: "/teampics/public-relations.png",
+    avatar: "/teampics/public-relations.webp",
     focus: "Builds our public story and convenes partners on key moments.",
   },
   {
     name: "Mussa John Witness",
     role: "Media Relations Manager",
     joined: "2025",
-    avatar: "/teampics/mediarelations.png",
+    avatar: "/teampics/mediarelations.webp",
     focus: "Leads multimedia storytelling across radio, print, and digital.",
   },
   {
     name: "Martha Megan Phiri",
     role: "Regional Coordinator - North",
     joined: "2025",
-    avatar: "/teampics/northern-coordinator.png",
+    avatar: "/teampics/northern-coordinator.webp",
     focus: "Coordinates district clubs and reforestation actions in the North.",
   },
   {
     name: "Chisomo Nyirenda",
     role: "Regional Coordinator - Central",
     joined: "2025",
-    avatar: "/teampics/central-coordinator.png",
+    avatar: "/teampics/central-coordinator.webp",
     focus: "Supports schools and communities across the Central Region.",
   },
   {
     name: "Prince Magombo",
     role: "Regional Coordinator - East",
     joined: "2025",
-    avatar: "/teampics/eastern-coordinator.png",
+    avatar: "/teampics/east-region-coordinator.webp",
     focus: "Champions shoreline resilience and youth training in the East.",
   },
   {
     name: "Bridget Namakhwa",
     role: "Regional Coordinator - South",
     joined: "2025",
-    avatar: "/teampics/southern-coordinator.png",
+    avatar: "/teampics/southern-coordinator.webp",
     focus: "Leads southern conservation clubs and community mobilization.",
   },
 ];
 
 function NationalCoordinatorCard({ member }: { member: Member }) {
   return (
-    <article className="overflow-hidden shadow-2xl border-2 border-[#d4a017]/50 bg-white flex flex-col">
+    <article className="overflow-hidden shadow-2xl border-2 border-[#d4a017]/50 bg-white">
       <div className="h-1 w-full bg-gradient-to-r from-[#d4a017] via-yellow-300 to-[#d4a017]" />
       <div className="relative h-80 flex-shrink-0 bg-green-900">
         <Image
@@ -168,7 +168,7 @@ export default function TeamPage() {
       </div>
 
       {/* ── Hero header ── */}
-      <section className="py-24 px-4 text-center">
+      <section className="py-16 px-4 text-center">
         <div className="max-w-4xl mx-auto">
           <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-[#d4a017] bg-black/40 px-3 py-2 rounded-full">
             <span className="h-px w-5 bg-[#d4a017]" />
@@ -186,32 +186,13 @@ export default function TeamPage() {
         </div>
       </section>
 
-      {/* ── National Coordinator ── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-8">
-        <div className="mb-8 flex items-center gap-3">
-          <span className="h-px flex-1 bg-[#d4a017]/40" />
-          <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-[#d4a017]">
-            National Leadership
-          </span>
-          <span className="h-px flex-1 bg-[#d4a017]/40" />
-        </div>
-        <div className="flex justify-center">
-          <div className="w-full max-w-sm">
-            <NationalCoordinatorCard member={nationalCoordinator} />
-          </div>
-        </div>
-      </section>
-
+    
       {/* ── Management Team ── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10 pb-20">
-        <div className="mb-8 flex items-center gap-3">
-          <span className="h-px flex-1 bg-white/20" />
-          <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/60">
-            Management Team
-          </span>
-          <span className="h-px flex-1 bg-white/20" />
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <section className="max-w-7xl mx-auto flex flex-col sm:flex-row px-4 sm:px-6 py-10 pb-20">
+      <div className="max-w-sm pr-4">
+            <NationalCoordinatorCard member={nationalCoordinator} />
+      </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-6">
           {team.map((member) => (
             <MemberCard key={member.name} member={member} />
           ))}

@@ -1,44 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getPrismaClient, ensureCmsSchema } from "@/lib/cms/db";
+import { ensureCmsSchema } from "@/lib/cms/db";
 import { getSessionUserFromRequest } from "@/lib/cms/auth";
-import { canManageUsers } from "@/lib/cms/permissions";
+import { canCreateOrEditContent } from "@/lib/cms/permissions";
+import { getBlogs, createBlog } from "@/lib/cms/service";
 import { generateSlug } from "@/lib/cms/utils";
+import type { ContentRegion, ContentStatus } from "@/lib/cms/service";
 
 export async function GET(req: NextRequest) {
   try {
     await ensureCmsSchema();
-    const client = getPrismaClient();
-    
     const { searchParams } = new URL(req.url);
-    const region = searchParams.get("region");
-    const status = searchParams.get("status") || "published";
-
-    const where: any = {};
-    if (region && region !== "all") {
-      where.region = region;
-    }
-    if (status !== "all") {
-      where.status = status;
-    }
-
-    const blogs = await client.cmsBlog.findMany({
-      where,
-      include: {
-        createdBy: {
-          select: { id: true, name: true, email: true },
-        },
-      },
-      orderBy: { publishedAt: "desc" },
-      take: 50,
+    const region = searchParams.get("region") as ContentRegion | null;
+    const status = (searchParams.get("status") || "published") as ContentStatus | "all";
+    const limit = Number(searchParams.get("limit")) || 50;
+    const items = await getBlogs({ region: region ?? undefined, status, limit });
+    return NextResponse.json(items, {
+      headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
     });
-
-    return NextResponse.json(blogs);
   } catch (error) {
-    console.error("Blog fetch error:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch blogs" },
-      { status: 500 }
-    );
+    console.error("blogs GET error:", error);
+    return NextResponse.json({ error: "Failed to fetch blogs" }, { status: 500 });
   }
 }
 
@@ -46,47 +27,21 @@ export async function POST(req: NextRequest) {
   try {
     await ensureCmsSchema();
     const user = await getSessionUserFromRequest(req);
-
-    if (!user || !canManageUsers(user)) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
+    if (!user || !canCreateOrEditContent(user)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const body = await req.json();
-    const client = getPrismaClient();
-
+    if (!body.title || !body.excerpt || !body.richContent || !body.region)
+      return NextResponse.json({ error: "title, excerpt, richContent, region are required" }, { status: 400 });
     const slug = generateSlug(body.title);
-    const existingSlug = await client.cmsBlog.findUnique({
-      where: { slug },
+    const item = await createBlog({
+      title: body.title, slug, excerpt: body.excerpt,
+      richContent: body.richContent,
+      coverImage: typeof body.coverImage === "string" ? body.coverImage : (body.coverImage?.url ?? null),
+      region: body.region, status: body.status ?? "draft",
+      createdById: user.id,
     });
-
-    if (existingSlug) {
-      return NextResponse.json(
-        { error: "Slug already exists. Title must be unique." },
-        { status: 400 }
-      );
-    }
-
-    const blog = await client.cmsBlog.create({
-      data: {
-        title: body.title,
-        slug,
-        excerpt: body.excerpt,
-        richContent: body.richContent,
-        coverImage: body.coverImage.url || null,
-        region: body.region,
-        status: body.status || "draft",
-        publishedAt: body.status === "published" ? new Date() : null,
-        createdById: user.id,
-        updatedById: user.id,
-      },
-    });
-
-    return NextResponse.json(blog, { status: 201 });
-  } catch (error) {
-    console.error("Blog creation error:", error);
-    return NextResponse.json(
-      { error: "Failed to create blog" },
-      { status: 500 }
-    );
+    return NextResponse.json(item, { status: 201 });
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Failed to create blogs";
+    return NextResponse.json({ error: msg }, { status: 400 });
   }
 }

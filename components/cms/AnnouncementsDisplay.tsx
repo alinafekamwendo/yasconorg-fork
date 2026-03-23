@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
 import { formatDate } from "@/lib/cms/utils";
 
 interface AnnouncementItem {
@@ -9,75 +10,42 @@ interface AnnouncementItem {
   title: string;
   excerpt: string;
   coverImage: string | null;
-  publishedAt: string;
+  publishedAt: string | null;
   slug: string;
 }
 
-interface AnnouncementsDisplayProps {
-  region: string;
-  limit?: number;
-}
+export default function AnnouncementsDisplay({ region = "national", limit = 5 }: { region?: string; limit?: number }) {
+  const { data, isLoading } = useQuery<AnnouncementItem[]>({
+    queryKey: ["announcements", region, limit],
+    queryFn: async () => {
+      const res = await fetch(`/api/cms/announcements?region=${region}&status=published&limit=${limit}`);
+      if (!res.ok) throw new Error("fetch failed");
+      return res.json();
+    },
+    staleTime: 5 * 60 * 1000,
+  });
 
-export default function AnnouncementsDisplay({
-  region,
-  limit = 5,
-}: AnnouncementsDisplayProps) {
-  const [announcements, setAnnouncements] = useState<AnnouncementItem[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchAnnouncements = async () => {
-      try {
-        const response = await fetch(
-          `/api/cms/announcements?region=${region}&status=published`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setAnnouncements(data.slice(0, limit));
-        }
-      } catch (error) {
-        console.error("Failed to fetch announcements:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAnnouncements();
-  }, [region, limit]);
-
-  if (loading) return <div className="text-center py-4">Loading...</div>;
-
-  if (announcements.length === 0) {
-    return null;
-  }
+  if (isLoading) return <div className="animate-pulse h-32 bg-orange-50 rounded-lg mt-6" />;
+  if (!data || data.length === 0) return null;
 
   return (
     <div className="space-y-4 mt-6">
-      {announcements.map((announcement) => (
-        <div
-          key={announcement.id}
-          className="flex gap-4 p-4 border border-orange-200 bg-orange-50 rounded-lg hover:shadow-md transition-shadow"
-        >
-          {announcement.coverImage && (
+      {data.map((item) => (
+        <div key={item.id} className="flex gap-4 p-4 border border-orange-200 bg-orange-50 rounded-lg hover:shadow-md transition-shadow">
+          {item.coverImage && (
             <div className="relative w-24 h-24 flex-shrink-0">
-              <Image
-                src={announcement.coverImage}
-                alt={announcement.title}
-                fill
-                className="object-cover rounded"
-              />
+              <Image src={item.coverImage} alt={item.title} fill className="object-cover rounded" sizes="96px" />
             </div>
           )}
           <div className="flex-1">
-            <p className="text-xs font-semibold text-orange-600 mb-1">
-              {formatDate(announcement.publishedAt)}
-            </p>
-            <p className="font-semibold text-[#1a2e1a] line-clamp-2">
-              {announcement.title}
-            </p>
-            <p className="text-sm text-[#2e3d35] mt-2 line-clamp-2">
-              {announcement.excerpt}
-            </p>
+            {item.publishedAt && (
+              <p className="text-xs font-semibold text-orange-600 mb-1">{formatDate(item.publishedAt)}</p>
+            )}
+            <p className="font-semibold text-[#1a2e1a] line-clamp-2">{item.title}</p>
+            <p className="text-sm text-[#2e3d35] mt-2 line-clamp-2">{item.excerpt}</p>
+            <Link href={`/news/${item.slug}`} className="text-xs font-semibold text-orange-700 mt-2 block hover:text-orange-800">
+              Read more
+            </Link>
           </div>
         </div>
       ))}

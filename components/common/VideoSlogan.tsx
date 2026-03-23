@@ -1,4 +1,8 @@
-import React from "react";
+
+/* eslint-disable react-hooks/rules-of-hooks */
+"use client";
+
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 const videoData = [
@@ -26,8 +30,27 @@ const videoData = [
 ];
 
 export default function SloganVideo() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    const node = containerRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4" ref={containerRef}>
       <div className="mb-12 text-center">
         <span className="text-xs font-bold uppercase tracking-widest text-[#d4a017]">- Activities -</span>
         <h2 className="text-3xl md:text-5xl font-bold mt-3 mb-4">SLOGAN VIDEOS OF OUR TEAM</h2>
@@ -41,10 +64,14 @@ export default function SloganVideo() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {videoData.map((video) => (
           <div key={video.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 hover:scale-105">
-            <video className="w-full h-48 object-cover" controls preload="metadata">
-              <source src={video.src} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+            {shouldLoad ? (
+              <video className="w-full h-48 object-cover" controls preload="metadata">
+                <source src={video.src} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <div className="w-full h-48 bg-gray-200 animate-pulse" />
+            )}
             <div className="p-4">
               <h2>
                 <Link href={video.href} className="text-xl font-semibold text-gray-900 mb-3 block hover:text-green-700 transition-colors">

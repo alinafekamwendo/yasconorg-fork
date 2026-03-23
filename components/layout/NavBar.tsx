@@ -17,7 +17,7 @@ const navItems = [
         { href: "/about/objectives", label: "Objectives" },
         { href: "/about/location", label: "Where We Work" },
         { href: "/about/work", label: "Our Work" },
-        { href: "/about/management", label: "Our Management Team" },
+        { href: "/about/management", label: "Our Team" },
         { href: "/about/our-story", label: "Our Story" },
         { href: "/contact", label: "Contact Us" },
       ],
@@ -38,6 +38,18 @@ const navItems = [
   },
   {
     label: "REGIONS",
+    dropdown: {
+      title: "Regional Hubs",
+      links: [
+        { href: "/impact/northern", label: "Northern Region" },
+        { href: "/impact/central", label: "Central Region" },
+        { href: "/impact/southern", label: "Southern Region" },
+        { href: "/impact/eastern", label: "Eastern Region" },
+      ],
+    },
+  },
+   {
+    label: "ENTERPRISES",
     dropdown: {
       title: "Regional Hubs",
       links: [
@@ -131,7 +143,7 @@ export default function Navbar() {
                 onMouseLeave={handleMouseLeave}
               >
                 <button
-                  className={`flex items-center gap-1 px-4 py-2 text-sm font-semibold tracking-[0.08em] uppercase transition-colors ${
+                  className={`flex items-center gap-1 px-2 py-2 text-sm font-semibold tracking-[0.08em] uppercase transition-colors ${
                    "text-white hover:text-[#f4a32a]"
                    
                   } ${activeDropdown === idx ? "text-[#f4a32a]" : ""}`}
@@ -181,17 +193,17 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center gap-3">
             <Link
               href="/get-involved"
-              className="bg-[#f5a524] text-white text-sm font-bold px-6 py-2 rounded-sm shadow-lg hover:bg-[#e3910c] transition-colors"
+              className="bg-[#f5a524] text-white text-sm font-bold px-3 py-2 rounded-sm shadow-lg hover:bg-[#e3910c] transition-colors"
             >
               GET INVOLVED
             </Link>
             <Link
               href="/contact"
-              className={`border text-sm font-bold px-5 py-2 rounded-sm transition-all duration-200  
+              className={`border text-sm font-bold px-3 py-2 rounded-sm transition-all duration-200  
           border-green-700 text-white hover:bg-green-700 
               `}
             >
-              CONTACT
+              PARTNER US
             </Link>
           </div>
 

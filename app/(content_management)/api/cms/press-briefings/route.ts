@@ -1,44 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getPrismaClient, ensureCmsSchema } from "@/lib/cms/db";
+import { ensureCmsSchema } from "@/lib/cms/db";
 import { getSessionUserFromRequest } from "@/lib/cms/auth";
-import {  canManageUsers } from "@/lib/cms/permissions";
+import { canCreateOrEditContent } from "@/lib/cms/permissions";
+import { getPressBriefings, createPressBriefing } from "@/lib/cms/service";
 import { generateSlug } from "@/lib/cms/utils";
+import type { ContentRegion, ContentStatus } from "@/lib/cms/service";
 
 export async function GET(req: NextRequest) {
   try {
     await ensureCmsSchema();
-    const client = getPrismaClient();
-    
     const { searchParams } = new URL(req.url);
-    const region = searchParams.get("region");
-    const status = searchParams.get("status") || "published";
-
-    const where: any = {};
-    if (region && region !== "all") {
-      where.region = region;
-    }
-    if (status !== "all") {
-      where.status = status;
-    }
-
-    const briefings = await client.cmsPressBreifing.findMany({
-      where,
-      include: {
-        createdBy: {
-          select: { id: true, name: true, email: true },
-        },
-      },
-      orderBy: { publishedAt: "desc" },
-      take: 50,
+    const region = searchParams.get("region") as ContentRegion | null;
+    const status = (searchParams.get("status") || "published") as ContentStatus | "all";
+    const limit = Number(searchParams.get("limit")) || 50;
+    const items = await getPressBriefings({ region: region ?? undefined, status, limit });
+    return NextResponse.json(items, {
+      headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
     });
-
-    return NextResponse.json(briefings);
   } catch (error) {
-    console.error("Press briefing fetch error:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch press briefings" },
-      { status: 500 }
-    );
+    console.error("press-briefings GET error:", error);
+    return NextResponse.json({ error: "Failed to fetch press-briefings" }, { status: 500 });
   }
 }
 
@@ -46,47 +27,21 @@ export async function POST(req: NextRequest) {
   try {
     await ensureCmsSchema();
     const user = await getSessionUserFromRequest(req);
-
-    if (!user || !canManageUsers(user)) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
+    if (!user || !canCreateOrEditContent(user)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const body = await req.json();
-    const client = getPrismaClient();
-
+    if (!body.title || !body.excerpt || !body.richContent || !body.region)
+      return NextResponse.json({ error: "title, excerpt, richContent, region are required" }, { status: 400 });
     const slug = generateSlug(body.title);
-    const existingSlug = await client.cmsPressBreifing.findUnique({
-      where: { slug },
+    const item = await createPressBriefing({
+      title: body.title, slug, excerpt: body.excerpt,
+      richContent: body.richContent,
+      coverImage: typeof body.coverImage === "string" ? body.coverImage : (body.coverImage?.url ?? null),
+      region: body.region, status: body.status ?? "draft",
+      createdById: user.id,
     });
-
-    if (existingSlug) {
-      return NextResponse.json(
-        { error: "Slug already exists. Title must be unique." },
-        { status: 400 }
-      );
-    }
-
-    const briefing = await client.cmsPressBreifing.create({
-      data: {
-        title: body.title,
-        slug,
-        excerpt: body.excerpt,
-        richContent: body.richContent,
-        coverImage: body.coverImage.url|| null,
-        region: body.region,
-        status: body.status || "draft",
-        publishedAt: body.status === "published" ? new Date() : null,
-        createdById: user.id,
-        updatedById: user.id,
-      },
-    });
-
-    return NextResponse.json(briefing, { status: 201 });
-  } catch (error) {
-    console.error("Press briefing creation error:", error);
-    return NextResponse.json(
-      { error: "Failed to create press briefing" },
-      { status: 500 }
-    );
+    return NextResponse.json(item, { status: 201 });
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Failed to create press-briefings";
+    return NextResponse.json({ error: msg }, { status: 400 });
   }
 }

@@ -1,44 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getPrismaClient, ensureCmsSchema } from "@/lib/cms/db";
+import { ensureCmsSchema } from "@/lib/cms/db";
 import { getSessionUserFromRequest } from "@/lib/cms/auth";
-import { canManageUsers} from "@/lib/cms/permissions";
+import { canCreateOrEditContent } from "@/lib/cms/permissions";
+import { getNews, createNews } from "@/lib/cms/service";
 import { generateSlug } from "@/lib/cms/utils";
+import type { ContentRegion, ContentStatus } from "@/lib/cms/service";
 
 export async function GET(req: NextRequest) {
   try {
     await ensureCmsSchema();
-    const client = getPrismaClient();
-    
     const { searchParams } = new URL(req.url);
-    const region = searchParams.get("region");
-    const status = searchParams.get("status") || "published";
+    const region = searchParams.get("region") as ContentRegion | null;
+    const status = (searchParams.get("status") || "published") as ContentStatus | "all";
+    const limit = Number(searchParams.get("limit")) || 50;
 
-    const where: any = {};
-    if (region && region !== "all") {
-      where.region = region;
-    }
-    if (status !== "all") {
-      where.status = status;
-    }
-
-    const news = await client.cmsNews.findMany({
-      where,
-      include: {
-        createdBy: {
-          select: { id: true, name: true, email: true },
-        },
-      },
-      orderBy: { publishedAt: "desc" },
-      take: 50,
+    const news = await getNews({ region: region ?? undefined, status, limit });
+    return NextResponse.json(news, {
+      headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
     });
-
-    return NextResponse.json(news);
   } catch (error) {
-    console.error("News fetch error:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch news" },
-      { status: 500 }
-    );
+    console.error("News GET error:", error);
+    return NextResponse.json({ error: "Failed to fetch news" }, { status: 500 });
   }
 }
 
@@ -46,47 +28,26 @@ export async function POST(req: NextRequest) {
   try {
     await ensureCmsSchema();
     const user = await getSessionUserFromRequest(req);
-
-    if (!user || !canManageUsers(user)) {
+    if (!user || !canCreateOrEditContent(user)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await req.json();
-    const client = getPrismaClient();
-
-    const slug = generateSlug(body.title);
-    const existingSlug = await client.cmsNews.findUnique({
-      where: { slug },
-    });
-
-    if (existingSlug) {
-      return NextResponse.json(
-        { error: "Slug already exists. Title must be unique." },
-        { status: 400 }
-      );
+    if (!body.title || !body.excerpt || !body.richContent || !body.region) {
+      return NextResponse.json({ error: "title, excerpt, richContent, region are required" }, { status: 400 });
     }
 
-    const newsItem = await client.cmsNews.create({
-      data: {
-        title: body.title,
-        slug,
-        excerpt: body.excerpt,
-        richContent: body.richContent,
-        coverImage: body.coverImage.url || null,
-        region: body.region,
-        status: body.status || "draft",
-        publishedAt: body.status === "published" ? new Date() : null,
-        createdById: user.id,
-        updatedById: user.id,
-      },
+    const slug = generateSlug(body.title);
+    const item = await createNews({
+      title: body.title, slug, excerpt: body.excerpt,
+      richContent: body.richContent,
+      coverImage: typeof body.coverImage === "string" ? body.coverImage : (body.coverImage?.url ?? null),
+      region: body.region, status: body.status ?? "draft",
+      createdById: user.id,
     });
-
-    return NextResponse.json(newsItem, { status: 201 });
+    return NextResponse.json(item, { status: 201 });
   } catch (error) {
-    console.error("News creation error:", error);
-    return NextResponse.json(
-      { error: "Failed to create news" },
-      { status: 500 }
-    );
+    const msg = error instanceof Error ? error.message : "Failed to create news";
+    return NextResponse.json({ error: msg }, { status: 400 });
   }
 }
