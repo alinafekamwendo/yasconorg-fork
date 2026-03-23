@@ -203,9 +203,6 @@ export default function Programs() {
                       className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg hover:bg-gray-100 transition"
                     >
                       <span className="text-gray-700">{activity.name}</span>
-                      <span className="text-xs text-blue-500 font-medium">
-                        View
-                      </span>
                     </li>
                   ))}
                 </ul>
