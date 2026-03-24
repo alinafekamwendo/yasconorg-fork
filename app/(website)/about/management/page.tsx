@@ -14,7 +14,7 @@ const nationalCoordinator: Member = {
   role: "National Coordinator",
   avatar: "/teampics/national-coordinator.webp",
   focus: "Guides strategy, partnerships, and nationwide program delivery.",
-  bio: "A distinguished anthropologist and dedicated young conservation leader, co-founder of YASCON, and a prominent advocate for youth empowerment. His work focuses on harnessing youth leadership to drive conservation and promote sustainable development in Malawi. Through entrepreneurship, innovation, and research, Mwai aims to create opportunities for young people to thrive and realise their full potential.",
+  bio: "A distinguished anthropologist and dedicated young conservation leader, and a prominent advocate for youth empowerment. His work focuses on harnessing youth leadership to drive conservation and promote sustainable development in Malawi. Through entrepreneurship, innovation, and research, Mwai aims to create opportunities for young people to thrive and realise their full potential.",
 };
 
 const team: Member[] = [
@@ -109,7 +109,7 @@ function NationalCoordinatorCard({ member }: { member: Member }) {
         <div className="mt-auto pt-4 border-t border-[#d4a017]/20 flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[#d4a017]" />
           <span className="text-xs font-bold uppercase tracking-widest text-[#d4a017]">
-            Co-Founder · YASCON
+            ""
           </span>
         </div>
       </div>

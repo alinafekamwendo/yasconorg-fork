@@ -29,6 +29,7 @@ const navItems = [
       title: "National Office",
       links: [
         { href: "/about/management", label: "Management" },
+        { href: "/about/board", label: "Board" },
         { href: "/impact/national/partners", label: "Partners" },
         { href: "/impact/national/programs", label: "Programs" },
         { href: "/impact/national/statistics", label: "Statistics" },

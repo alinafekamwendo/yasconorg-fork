@@ -148,7 +148,7 @@ export default function Footer() {
             <div className="space-y-1.5 text-xs text-gray-400">
               <div> +265 (0) 885284321</div>g
               <div> +265 (0) 986818697</div>
-              <div> yasconmw@outlook.com</div>
+              <div> info@yascon.org</div>
               <div> Blantyre, Malawi</div>
             </div>
           </div>
