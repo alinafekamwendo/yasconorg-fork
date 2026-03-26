@@ -44,10 +44,12 @@ const REGIONS = ["national", "central", "northern", "southern", "eastern"];
 const TYPE_MAP: Record<string, string> = {
   news: "news", announcement: "announcements", press_briefing: "press-briefings",
   blog: "blogs", video: "videos",
+  team: "teams", media: "media",
 };
 const TYPE_LABEL: Record<string, string> = {
   news: "News", announcement: "Announcement", press_briefing: "Press Briefing",
   blog: "Blog", video: "Video",
+  team: "Team", media: "Media",
 };
 const STATUS_STYLE: Record<string, string> = {
   published: "bg-emerald-100 text-emerald-700",
@@ -101,14 +103,18 @@ export default function CmsClient({ initialUser }: { initialUser: CmsUserRecord 
         fetch("/api/cms/press-briefings?status=all").then((r) => r.json()),
         fetch("/api/cms/videos?status=all").then((r) => r.json()),
         fetch("/api/cms/blogs?status=all").then((r) => r.json()),
+        fetch("/api/cms/teams?status=all").then((r) => r.json()),
+        fetch("/api/cms/media?status=all").then((r) => r.json()),
       ]);
-      const [ann, news, brief, vids, blogs] = results.map((r) => (r.status === "fulfilled" ? r.value : []));
+      const [ann, news, brief, vids, blogs, teams, media] = results.map((r) => (r.status === "fulfilled" ? r.value : []));
       const merged: ContentItem[] = [
-        ...ann.map((x: ContentItem) => ({ ...x, contentType: "announcement" })),
+        ...ann.map((x: any) => ({ ...x, contentType: "announcement", title: x.title || x.name || 'Untitled' })),
         ...news.map((x: ContentItem) => ({ ...x, contentType: "news" })),
         ...brief.map((x: ContentItem) => ({ ...x, contentType: "press_briefing" })),
         ...vids.map((x: ContentItem) => ({ ...x, contentType: "video" })),
         ...blogs.map((x: ContentItem) => ({ ...x, contentType: "blog" })),
+        ...teams.map((x: any) => ({ ...x, contentType: "team", title: x.name })),
+        ...media.map((x: any) => ({ ...x, contentType: "media", title: x.title })),
       ].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
       setAllContent(merged);
     } catch { showMsg("Failed to load content", "error"); }

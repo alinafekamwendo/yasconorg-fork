@@ -360,6 +360,7 @@ export async function deletePressBriefing(id: number) {
 }
 
 // ─── Videos ────────────────────────────────────────────────────────────────
+// ─── Videos ────────────────────────────────────────────────────────────────
 export async function getVideos(opts: ListOptions = {}) {
   const key = `videos:${JSON.stringify(opts)}`;
   const cached = getCache<unknown[]>(key);
@@ -434,8 +435,209 @@ export async function deleteVideo(id: number) {
   invalidateCache("videos:");
 }
 
+// ─── Team Members ──────────────────────────────────────────────────────────
+export interface TeamMember {
+  id: number;
+  name: string;
+  role: string;
+  joined?: string | null;
+  avatar: string | null;
+  focus: string;
+  teamType: 'management' | 'board';
+  region: ContentRegion | null;
+  status: ContentStatus;
+  publishedAt: string | null;
+  createdBy: { name: string };
+}
+
+export async function getTeamMembers(opts: ListOptions & { type?: 'management' | 'board' | 'all' } = {}) {
+  const key = `teams:${JSON.stringify(opts)}`;
+  const cached = getCache<TeamMember[]>(key);
+  if (cached) return cached as TeamMember[];
+
+  const prisma = getPrismaClient();
+  const where: Record<string, unknown> = {};
+  if (opts.region && opts.region !== "all") where.region = opts.region;
+  if (opts.type && opts.type !== "all") where.teamType = opts.type;
+  where.status = opts.status && opts.status !== "all" ? opts.status : "published";
+
+  const data = await prisma.cmsTeamMember.findMany({
+    where,
+    include: { createdBy: { select: { id: true, name: true } } },
+    orderBy: { publishedAt: "desc" },
+    take: opts.limit ?? 50,
+    skip: opts.skip ?? 0,
+  });
+
+  setCache(key, data);
+  return data as TeamMember[];
+}
+
+export async function getTeamMemberById(id: number) {
+  const prisma = getPrismaClient();
+  return prisma.cmsTeamMember.findUnique({
+    where: { id },
+    include: { createdBy: { select: { name: true } } },
+  });
+}
+
+export async function createTeamMember(data: {
+  name: string;
+  role: string;
+  joined?: string | null;
+  avatar?: string | null;
+  focus: string;
+  teamType: 'management' | 'board';
+  region?: ContentRegion | null;
+  status: ContentStatus;
+  createdById: number;
+}) {
+  const prisma = getPrismaClient();
+  const result = await prisma.cmsTeamMember.create({
+    data: {
+      ...data,
+      publishedAt: data.status === "published" ? new Date() : null,
+      updatedById: data.createdById,
+    },
+  });
+  invalidateCache("teams:");
+  return result;
+}
+
+export async function updateTeamMember(id: number, data: Partial<{
+  name: string;
+  role: string;
+  joined: string | null;
+  avatar: string | null;
+  focus: string;
+  teamType: 'management' | 'board';
+  region: ContentRegion | null;
+  status: ContentStatus;
+}>, updatedById: number) {
+  const prisma = getPrismaClient();
+  const existing = await prisma.cmsTeamMember.findUnique({ where: { id } });
+  const wasPublished = existing?.status !== "published" && data.status === "published";
+  const result = await prisma.cmsTeamMember.update({
+    where: { id },
+    data: {
+      ...data,
+      updatedById,
+      ...(wasPublished ? { publishedAt: new Date() } : {}),
+      updatedAt: new Date(),
+    },
+  });
+  invalidateCache("teams:");
+  return result;
+}
+
+export async function deleteTeamMember(id: number) {
+  const prisma = getPrismaClient();
+  await prisma.cmsTeamMember.delete({ where: { id } });
+  invalidateCache("teams:");
+}
+
+// ─── Media Items (Gallery/Documents) ───────────────────────────────────────
+export interface MediaItem {
+  id: number;
+  title: string;
+  slug: string;
+  description: string | null;
+  mediaType: 'gallery' | 'document';
+  fileUrl: string;
+  coverImage: string | null;
+  region: ContentRegion | null;
+  status: ContentStatus;
+  publishedAt: string | null;
+  createdBy: { name: string };
+}
+
+export async function getMediaItems(opts: ListOptions & { type?: 'gallery' | 'document' | 'all' } = {}) {
+  const key = `media:${JSON.stringify(opts)}`;
+  const cached = getCache<MediaItem[]>(key);
+  if (cached) return cached as MediaItem[];
+
+  const prisma = getPrismaClient();
+  const where: Record<string, unknown> = {};
+  if (opts.region && opts.region !== "all") where.region = opts.region;
+  if (opts.type && opts.type !== "all") where.mediaType = opts.type;
+  where.status = opts.status && opts.status !== "all" ? opts.status : "published";
+
+  const data = await prisma.cmsMediaItem.findMany({
+    where,
+    include: { createdBy: { select: { id: true, name: true } } },
+    orderBy: { publishedAt: "desc" },
+    take: opts.limit ?? 50,
+    skip: opts.skip ?? 0,
+  });
+
+  setCache(key, data);
+  return data as MediaItem[];
+}
+
+export async function getMediaItemById(id: number) {
+  const prisma = getPrismaClient();
+  return prisma.cmsMediaItem.findUnique({
+    where: { id },
+    include: { createdBy: { select: { name: true } } },
+  });
+}
+
+export async function createMediaItem(data: {
+  title: string;
+  slug: string;
+  description?: string | null;
+  mediaType: 'gallery' | 'document';
+  fileUrl: string;
+  coverImage?: string | null;
+  region?: ContentRegion | null;
+  status: ContentStatus;
+  createdById: number;
+}) {
+  const prisma = getPrismaClient();
+  const result = await prisma.cmsMediaItem.create({
+    data: {
+      ...data,
+      publishedAt: data.status === "published" ? new Date() : null,
+      updatedById: data.createdById,
+    },
+  });
+  invalidateCache("media:");
+  return result;
+}
+
+export async function updateMediaItem(id: number, data: Partial<{
+  title: string;
+  slug: string;
+  description: string | null;
+  mediaType: 'gallery' | 'document';
+  fileUrl: string;
+  coverImage: string | null;
+  region: ContentRegion | null;
+  status: ContentStatus;
+}>, updatedById: number) {
+  const prisma = getPrismaClient();
+  const existing = await prisma.cmsMediaItem.findUnique({ where: { id } });
+  const wasPublished = existing?.status !== "published" && data.status === "published";
+  const result = await prisma.cmsMediaItem.update({
+    where: { id },
+    data: {
+      ...data,
+      updatedById,
+      ...(wasPublished ? { publishedAt: new Date() } : {}),
+      updatedAt: new Date(),
+    },
+  });
+  invalidateCache("media:");
+  return result;
+}
+
+export async function deleteMediaItem(id: number) {
+  const prisma = getPrismaClient();
+  await prisma.cmsMediaItem.delete({ where: { id } });
+  invalidateCache("media:");
+}
+
 // ─── Hero Slides (stored as CmsContent with contentType=blog, category=announcement) ──
-// Using a dedicated JSON store inside CmsContent body for hero slides
 export interface HeroSlide {
   id: string;
   label: string;
@@ -495,3 +697,4 @@ export async function saveHeroSlides(slides: HeroSlide[], userId: number) {
   }
   invalidateCache("hero:");
 }
+

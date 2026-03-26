@@ -52,6 +52,16 @@ enum PublishStatus {
   archived
 }
 
+enum CmsTeamType {
+  management
+  board
+}
+
+enum CmsMediaType {
+  gallery
+  document
+}
+
 model CmsUser {
   id                 Int       @id @default(autoincrement())
   name               String
@@ -79,6 +89,12 @@ model CmsUser {
   
   createdBlogs       CmsBlog[] @relation("CreatedBy")
   updatedBlogs       CmsBlog[] @relation("UpdatedBy")
+  
+  createdTeams       CmsTeamMember[] @relation("CreatedBy")
+  updatedTeams       CmsTeamMember[] @relation("UpdatedBy")
+  
+  createdMedia       CmsMediaItem[] @relation("CreatedBy")
+  updatedMedia       CmsMediaItem[] @relation("UpdatedBy")
 
   @@map("cms_users")
 }
@@ -113,8 +129,6 @@ model CmsContent {
   @@index([level, region, contentType, category])
   @@map("cms_content")
 }
-
-// ===== Enhanced Content Models with Media =====
 
 model CmsAnnouncement {
   id                 Int       @id @default(autoincrement())
@@ -221,5 +235,50 @@ model CmsBlog {
 
   @@index([region, status, publishedAt])
   @@map("cms_blogs")
+}
+
+model CmsTeamMember {
+  id          Int       @id @default(autoincrement())
+  name        String
+  slug        String    @unique
+  role        String
+  joined      String?
+  avatar      String?   @map("avatar")
+  focus       String
+  teamType    CmsTeamType
+  region      CmsRegion?
+  status      PublishStatus @default(draft)
+  publishedAt DateTime? @map("published_at")
+  createdById Int       @map("created_by")
+  createdBy   CmsUser   @relation("CreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  updatedById Int       @map("updated_by")
+  updatedBy   CmsUser   @relation("UpdatedBy", fields: [updatedById], references: [id], onDelete: Restrict)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@index([region, teamType, status, publishedAt])
+  @@map("cms_team_members")
+}
+
+model CmsMediaItem {
+  id          Int         @id @default(autoincrement())
+  title       String
+  slug        String      @unique
+  description String?
+  mediaType   CmsMediaType
+  fileUrl     String      @map("file_url")
+  coverImage  String?     @map("cover_image")
+  region      CmsRegion?
+  status      PublishStatus @default(draft)
+  publishedAt DateTime?   @map("published_at")
+  createdById Int         @map("created_by")
+  createdBy   CmsUser     @relation("CreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  updatedById Int         @map("updated_by")
+  updatedBy   CmsUser     @relation("UpdatedBy", fields: [updatedById], references: [id], onDelete: Restrict)
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  @@index([region, mediaType, status, publishedAt])
+  @@map("cms_media_items")
 }
 

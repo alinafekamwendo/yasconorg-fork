@@ -2,7 +2,7 @@
 
 import { CmsUserRecord } from "@/lib/cms/constants";
 import { useState } from "react";
-import { Menu, X, BarChart3, Plus, FileText, Users, LogOut, Image } from "lucide-react";
+import { Menu, X, BarChart3, Plus, FileText, Users, LogOut, Image, Users2, Image as ImageIcon, FileText as FileTextIcon } from "lucide-react";
 
 interface SidebarProps {
   user: CmsUserRecord;
@@ -20,6 +20,8 @@ export default function DashboardSidebar({ user, activeTab, onTabChange, onLogou
     { id: "create", label: "Create Content", icon: Plus },
     { id: "manage", label: "Manage Content", icon: FileText },
     { id: "hero", label: "Hero Slides", icon: Image },
+    { id: "teams", label: "Teams & Board", icon: Users2 },
+    { id: "media", label: "Gallery & Documents", icon: ImageIcon },
     ...(canManageUsers ? [{ id: "users", label: "Users", icon: Users }] : []),
   ];
 
