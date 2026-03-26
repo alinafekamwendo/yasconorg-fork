@@ -9,15 +9,23 @@ type Member = {
   bio?: string;
 };
 
-const nationalCoordinator: Member = {
-  name: "Mwai Mtayamanja",
-  role: "National Coordinator",
-  avatar: "/teampics/national-coordinator.webp",
-  focus: "Guides strategy, partnerships, and nationwide program delivery.",
-  bio: "A distinguished anthropologist and dedicated young conservation leader, and a prominent advocate for youth empowerment. His work focuses on harnessing youth leadership to drive conservation and promote sustainable development in Malawi. Through entrepreneurship, innovation, and research, Mwai aims to create opportunities for young people to thrive and realise their full potential.",
+import { getTeamMembers } from '@/lib/cms/service';
+
+type Member = {
+  name: string;
+  role: string;
+  joined?: string;
+  avatar: string;
+  focus: string;
+  bio?: string;
 };
 
-const team: Member[] = [
+async function getManagementTeam() {
+  const members = await getTeamMembers({ type: 'management', status: 'published' });
+  const national = members.find(m => m.region === 'national');
+  const team = members.filter(m => m.region !== 'national');
+  return { nationalCoordinator: national, team };
+}
   {
     name: "Clement Chiwambo",
     role: "Funding & Compliance Manager",
