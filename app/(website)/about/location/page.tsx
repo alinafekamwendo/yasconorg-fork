@@ -14,56 +14,83 @@ type Location = {
 const locations: Location[] = [
   {
     id: 1,
-    name: "Chilomoni Primary School",
+    name: "Educational & Youth Centers",
     category: "School",
     description:
-      "Partnering on tree-planting drives and climate education for learners and parents.",
-    image: "/our-work/work4.jpg",
+      "We establish wildlife clubs, orchards, woodlots, and integrating environmental themes into the curriculum in both ​Primary and Secondary Schools.",
+    image: "/our-work/work1.avif",
     area: "Blantyre - Education",
   },
   {
     id: 2,
-    name: "Blantyre Market",
-    category: "Market",
+    name: "Higher Education Campuses ",
+    category: "School",
     description:
-      "Waste sorting demos with vendors to cut plastics entering nearby streams.",
-    image: "/our-work/work1.avif",
+      "We partner with universities for research, internships, and large-scale awareness campaigns.",
+    image: "/our-work/work4.jpg",
     area: "Blantyre CBD - Community",
   },
   {
     id: 3,
-    name: "Michiru Forest",
-    category: "Forest",
+    name: "Youth Clubs & Community Centers",
+    category: "School",
     description:
-      "Habitat restoration walks with youth stewards protecting indigenous species.",
+      "​We engage the younger generation in hands-on projects like beekeeping, tree nursery establishment and management or sustainable craft-making.",
     image: "/our-work/work6.jpg",
     area: "Blantyre - Conservation",
   },
   {
     id: 4,
-    name: "Lake Malawi Shore",
-    category: "Lakes",
+    name: "Public & Commercial Spaces",
+    category: "Market",
     description:
-      "Civic education on sustainable fishing and shoreline clean-ups with local clubs.",
+      "we implement waste reduction strategies and awareness campaigns such as cleanup campaigns and proper waste disposal in trading Centers & Markets.",
     image: "/hero/mission2.jpg",
     area: "Mangochi - Water",
   },
   {
     id: 5,
-    name: "Community Borehole",
+    name: "​ Health Centers",
     category: "Water",
     description:
-      "Safe water awareness sessions and maintenance support with community leaders.",
+      "Promoting the link between a healthy environment and community wellbeing, often through cleanup campaigns, clean water initiatives or medicinal plant gardens.",
     image: "/our-work/work5.jpg",
     area: "Chilobwe - WASH",
   },
   {
     id: 6,
-    name: "Blantyre Secondary School",
+    name: "Natural & Productive Landscapes ",
+    category: "Forest",
+    description:
+      "We Work directly in or around protected areas and buffer zones to mitigate human-wildlife conflicts and support sustainable tourism.",
+    image: "/hero/mission1.jpg",
+    area: "Blantyre - Education",
+  },
+    {
+    id: 7,
+    name: "Riverbanks and Catchment Areas",
     category: "School",
     description:
-      "Student eco-clubs piloting zero-waste lunches and climate storytelling.",
+      "​  We focus on soil erosion control and protecting water sources through indigenous tree planting and gully reclamation.",
     image: "/hero/mission1.jpg",
+    area: "Blantyre - Education",
+  },
+      {
+    id: 8,
+    name: "Local Farms",
+    category: "School",
+    description:
+      "​We demonstrate agroforestry, conservation Agriculture and integrated soil fertility management techniques that allow farmers to increase yields while preserving the surrounding ecosystem.",
+    image: "/hero/mission1.jpg",
+    area: "Blantyre - Education",
+  },
+        {
+    id: 9,
+    name: "​ Governance & Administrative Hubs ",
+    category: "School",
+    description:
+      "We work with relevant Government ministries, departments, district councils and community leadership structures under  Traditional Authorities (TAs) to  align our conservation efforts with National Development Agendas, District Development Plans (DDPs) and establish local bylaws for natural resources protection.",
+    image: "/programs/stakeholder.avif",
     area: "Blantyre - Education",
   },
 ];
@@ -165,16 +192,12 @@ export default function LocationPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0f2610]/85 via-[#0f2610]/45 to-transparent" />
                 <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
                   <div>
-                    <p className="text-white text-sm uppercase tracking-[0.2em] font-semibold">
-                      {location.category}
-                    </p>
+                  
                     <span className="text-white font-bold text-lg tracking-wide drop-shadow">
                       {location.name}
                     </span>
                   </div>
-                  <span className="text-xs text-white/80 bg-white/10 border border-white/20 px-2 py-1 rounded-full">
-                    {location.area}
-                  </span>
+          
                 </div>
               </div>
               <div className="p-6 border-t-4 border-[#2f9e44]">
