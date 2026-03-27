@@ -37,6 +37,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       return NextResponse.json({ error: "Invalid id" }, { status: 400 });
     } 
     const body = await req.json();
+
     const item = await getTeamMemberById(numericId);
     if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
