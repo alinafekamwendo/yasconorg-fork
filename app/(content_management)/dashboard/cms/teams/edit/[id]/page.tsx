@@ -71,7 +71,9 @@ export default function TeamsEditPage() {
       fd.append("file", file);
       const res = await fetch("/api/upload/image", { method: "POST", body: fd });
       if (!res.ok) throw new Error((await res.json()).error || "Upload failed");
+     
       const data = await res.json();
+     
       setFormData((prev) => ({ ...prev, avatar: data.url }));
       setPreview(data.url);
     } catch (err) {

@@ -486,7 +486,7 @@ export async function createTeamMember(data: {
   slug: string;
   role: string;
   joined?: string | null;
-  avatar?: string | null;
+  avatar?: { url: string | null } | null;
   focus: string;
   teamType: 'management' | 'board';
   region?: ContentRegion | null;
@@ -497,6 +497,7 @@ export async function createTeamMember(data: {
   const result = await prisma.cmsTeamMember.create({
     data: {
       ...data,
+avatar: data.avatar?.url === "" ? null : data.avatar?.url, 
       publishedAt: data.status === "published" ? new Date() : null,
       updatedById: data.createdById,
     },
@@ -509,7 +510,7 @@ export async function updateTeamMember(id: number, data: Partial<{
   name: string;
   role: string;
   joined: string | null;
-  avatar: string | null;
+  avatar:{ url: string | null } ,
   focus: string;
   teamType: 'management' | 'board';
   region: ContentRegion | null;
@@ -522,6 +523,7 @@ export async function updateTeamMember(id: number, data: Partial<{
     where: { id },
     data: {
       ...data,
+      avatar: data.avatar?.url === "" ? null : data.avatar?.url, // allow clearing avatar by sending empty string
       updatedById,
       ...(wasPublished ? { publishedAt: new Date() } : {}),
       updatedAt: new Date(),

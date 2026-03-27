@@ -154,39 +154,7 @@ export default function Team() {
   return (
     <main className="relative min-h-screen text-white">
 
-      {/* ── Background: dark overlay over forest image ── */}
-      <div className="fixed inset-0 -z-10">
-        <Image
-          src="/team/river-forest.avif"
-          alt="team background"
-          fill
-          className="object-cover object-center"
-          priority
-        />
-        {/* Heavy dark overlay so cards are always readable */}
-        <div className="absolute inset-0 bg-[#0d1a0e]/80" />
-      </div>
-
-      {/* ── Hero header ── */}
-      <section className="py-16 px-4 text-center">
-        <div className="max-w-4xl mx-auto">
-          <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-[#d4a017] bg-black/40 px-3 py-2 rounded-full">
-            <span className="h-px w-5 bg-[#d4a017]" />
-            Leadership
-            <span className="h-px w-5 bg-[#d4a017]/60" />
-          </span>
-          <h1 className="text-4xl md:text-5xl font-extrabold mt-4 mb-4 drop-shadow-lg">
-            Management Team
-          </h1>
-          <p className="max-w-2xl mx-auto text-base md:text-lg text-white/80">
-            The people steering YASCON&apos;s mission — unified across national
-            leadership and regional coordination.
-          </p>
-          <div className="w-12 h-[3px] bg-[#d4a017] mt-8 mx-auto rounded-sm" />
-        </div>
-      </section>
-
-    
+         
       {/* ── Management Team ── */}
       <section className="max-w-7xl mx-auto flex flex-col sm:flex-row px-4 sm:px-6 py-10 pb-20">
       <div className="max-w-sm pr-4">

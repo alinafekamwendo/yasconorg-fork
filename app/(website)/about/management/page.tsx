@@ -21,6 +21,7 @@ async function getManagementTeam() {
     const members = await getTeamMembers({ type: "management", status: "published" });
     const national = members.find((m) => m.region === "national") ?? null;
     const team = members.filter((m) => m.region !== "national");
+    console.log("Fetched management team:", { national, team });
     return { nationalCoordinator: national, team };
   } catch (err) {
     console.error("Failed to load management team:", err);
@@ -50,24 +51,14 @@ function NationalCoordinatorCard({ member }: { member: Member }) {
         <div className="absolute inset-0 bg-gradient-to-t from-green-950/85 via-green-950/10 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-5">
           <span className="inline-block text-[10px] font-bold uppercase tracking-[0.3em] text-[#d4a017] bg-green-950/80 px-2 py-1 mb-2">
-            National Coordinator
+           {member.role}
           </span>
           <h2 className="text-2xl font-extrabold text-white leading-tight">{member.name}</h2>
         </div>
       </div>
       <div className="p-6 flex flex-col gap-4 flex-1 bg-white">
-        <p className="text-xs font-semibold uppercase tracking-widest text-green-800 border-l-2 border-[#d4a017] pl-3">
-          {member.role}
-        </p>
+
         <p className="text-sm text-gray-600 leading-relaxed">{member.focus}</p>
-        {member.joined && (
-          <div className="mt-auto pt-4 border-t border-[#d4a017]/20 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#d4a017]" />
-            <span className="text-xs font-bold uppercase tracking-widest text-[#d4a017]">
-              Since {member.joined}
-            </span>
-          </div>
-        )}
       </div>
     </article>
   );
@@ -138,9 +129,7 @@ export default async function TeamPage() {
 
       {/* Empty state */}
       {!nationalCoordinator && team.length === 0 && (
-        <div>
-          <Team />
-          </div>
+        <div className="text-center mt-12">No team members found</div>
       )}
 
       {/* Management Team */}
