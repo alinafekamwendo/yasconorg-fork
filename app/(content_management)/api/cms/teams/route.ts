@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { initCms } from "@/lib/cms/init";
 import { getSessionUserFromRequest } from "@/lib/cms/auth";
 import { canCreateOrEditContent } from "@/lib/cms/permissions";
 import { getTeamMembers, createTeamMember } from "@/lib/cms/service";
 import { generateSlug } from "@/lib/cms/utils";
 import type { ContentRegion, ContentStatus } from "@/lib/cms/service";
+
+// Pages that display team data — revalidated after every write
+const TEAM_PAGES = [
+  "/about/management",
+  "/impact/national/board",
+];
 
 export async function GET(req: NextRequest) {
   try {
@@ -21,9 +28,10 @@ export async function GET(req: NextRequest) {
       status,
       limit,
     });
-  
+
     return NextResponse.json(teams, {
-      headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
+      // No s-maxage caching on this API endpoint — always serve fresh data
+      headers: { "Cache-Control": "no-store" },
     });
   } catch (error) {
     console.error("Teams GET error:", error);
@@ -47,7 +55,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Generate a unique slug from name + timestamp
     const baseSlug = generateSlug(body.name);
     const slug = `${baseSlug}-${Date.now()}`;
 
@@ -63,6 +70,9 @@ export async function POST(req: NextRequest) {
       status: body.status ?? "draft",
       createdById: user.id,
     });
+
+    TEAM_PAGES.forEach((p) => revalidatePath(p));
+
     return NextResponse.json(item, { status: 201 });
   } catch (error) {
     const msg = error instanceof Error ? error.message : "Failed to create team member";

@@ -2,6 +2,8 @@ import Image from "next/image";
 import { getTeamMembers } from "@/lib/cms/service";
 import Team from "@/components/common/Team";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Management Team",
 };
@@ -50,13 +52,12 @@ function NationalCoordinatorCard({ member }: { member: Member }) {
         <div className="absolute inset-0 bg-gradient-to-t from-green-950/85 via-green-950/10 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-5">
           <span className="inline-block text-[10px] font-bold uppercase tracking-[0.3em] text-[#d4a017] bg-green-950/80 px-2 py-1 mb-2">
-           {member.role}
+            {member.role}
           </span>
           <h2 className="text-2xl font-extrabold text-white leading-tight">{member.name}</h2>
         </div>
       </div>
       <div className="p-6 flex flex-col gap-4 flex-1 bg-white">
-
         <p className="text-sm text-gray-600 leading-relaxed">{member.focus}</p>
       </div>
     </article>
@@ -83,9 +84,10 @@ function MemberCard({ member }: { member: Member }) {
       </div>
       <div className="p-5 flex flex-col flex-1 bg-white">
         <h3 className="text-base font-extrabold text-green-950 leading-tight">{member.name}</h3>
-        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#d4a017] mt-1 mb-3">{member.role}-{member.region}</p>
+        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#d4a017] mt-1 mb-3">
+          {member.role} - {member.region}
+        </p>
         <p className="text-sm text-gray-600 leading-relaxed">{member.focus}</p>
-      
       </div>
     </article>
   );
@@ -120,7 +122,8 @@ export default async function TeamPage() {
             Management Team
           </h1>
           <p className="max-w-2xl mx-auto text-base md:text-lg text-white/80">
-            The people steering YASCON&apos;s mission — unified across national leadership and regional coordination.
+            The people steering YASCON&apos;s mission — unified across national leadership and regional
+            coordination.
           </p>
           <div className="w-12 h-[3px] bg-[#d4a017] mt-8 mx-auto rounded-sm" />
         </div>
